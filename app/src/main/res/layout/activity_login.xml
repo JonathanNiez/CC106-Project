@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@drawable/square"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/logo"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/inputFields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/linear"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:helperText="Your Email"
+                app:helperTextTextColor="@color/black"
+                android:background="@drawable/edit_text"
+                app:endIconMode="clear_text"
+                app:startIconDrawable="@drawable/mail24"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="340dp"
+                    android:layout_height="60dp"
+                    android:inputType="textEmailAddress"
+                    android:hint="EMAIL"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:background="@drawable/edit_text"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:helperText="Your Password"
+                app:helperTextTextColor="@color/black"
+                android:background="@drawable/edit_text"
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/padlock24"
+
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="340dp"
+                    android:layout_height="60dp"
+                    android:inputType="textPassword"
+                    android:hint="PASSWORD"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:background="@drawable/edit_text"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/loginBtn"
+                android:layout_width="246dp"
+                android:layout_height="61dp"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/gray"
+                android:background="@drawable/button"
+                android:fontFamily="@font/poppins_medium"
+                android:text="LOGIN"
+                android:textSize="16dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account?"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/white"
+                android:layout_marginTop="30dp"
+                />
+
+            <TextView
+                android:id="@+id/textViewRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="REGISTER"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/orange"
+                android:layout_marginLeft="5dp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

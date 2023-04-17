@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Register"
+    android:background="@color/bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/square"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/logo"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/inputFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@+id/linear"
+            android:gravity="center">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                app:helperText="*Required"
+                app:helperTextTextColor="@color/red"
+                android:background="@drawable/edit_text"
+                app:startIconDrawable="@drawable/mail24"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="340dp"
+                    android:layout_height="60dp"
+                    android:hint="EMAIL"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:background="@drawable/edit_text"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:helperText="*Required"
+                app:helperTextTextColor="@color/red"
+                android:background="@drawable/edit_text"
+                app:startIconDrawable="@drawable/padlock24"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="340dp"
+                    android:layout_height="60dp"
+                    android:inputType="textPassword"
+                    android:hint="PASSWORD"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:background="@drawable/edit_text"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:helperText="*Required"
+                app:helperTextTextColor="@color/red"
+                android:background="@drawable/edit_text"
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/padlock24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/confirmPassword"
+                    android:layout_width="340dp"
+                    android:layout_height="60dp"
+                    android:inputType="textPassword"
+                    android:hint="CONFIRM PASSWORD"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:background="@drawable/edit_text"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:helperText="*Required"
+                app:helperTextTextColor="@color/red"
+                android:background="@drawable/edit_text"
+                app:startIconDrawable="@drawable/address24"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/address"
+                    android:layout_width="340dp"
+                    android:layout_height="60dp"
+                    android:hint="ADDRESS"
+                    android:inputType="textPostalAddress"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:background="@drawable/edit_text"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/registerBtn"
+                android:layout_width="250dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/gray"
+                android:background="@drawable/button"
+                android:fontFamily="@font/poppins_medium"
+                android:text="REGISTER"
+                android:textSize="16dp"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_below="@+id/inputFields"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account?"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/textViewLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LOGIN"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/orange"
+                android:layout_marginLeft="5dp"/>
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</ScrollView>
