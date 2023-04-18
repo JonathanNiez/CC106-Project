@@ -1,39 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:orientation="vertical"
-    android:gravity="bottom"
-    android:padding="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/gray"
-    >
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="15dp">
 
-    <ImageView
-        android:id="@+id/imageview"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageCardView"
         android:layout_width="25pt"
         android:layout_height="25pt"
-        android:src="@drawable/mar"/>
+        app:cardCornerRadius="15dp">
 
-    <TextView
-        android:id="@+id/getUsername"
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/mar"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="20dp"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+
+
+    <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:textSize="10pt"
-        android:paddingTop="10dp"
-        android:layout_below="@id/imageview"
-      />
+        android:layout_below="@id/imageCardView"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/navFirstname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Firstname"
+            android:textColor="@color/black"
+            android:textSize="8pt" />
+
+        <TextView
+            android:id="@+id/navLastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Lastname"
+            android:textColor="@color/black"
+            android:textSize="8pt" />
+
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/getEmail"
+        android:id="@+id/navEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
         android:text="Email"
-        android:textSize="8pt"
         android:textColor="@color/black"
-        android:layout_below="@id/getUsername"/>
-
+        android:textSize="8pt"
+        android:layout_below="@+id/linear"/>
 </RelativeLayout>

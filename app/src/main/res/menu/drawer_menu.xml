@@ -35,6 +35,10 @@
         <menu>
 
             <item
+                android:id="@+id/messaging"
+                android:title="Messaging" />
+
+            <item
                 android:id="@+id/share"
                 android:title="Share" />
 
