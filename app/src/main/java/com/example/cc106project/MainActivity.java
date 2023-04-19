@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        userID = auth.getCurrentUser().getUid();
         fStore = FirebaseFirestore.getInstance();
 
         toolbar = findViewById(R.id.toolbar);
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navHeader = navigationView.getHeaderView(0);
 
-        if (userID == null) {
+        if (user == null) {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
@@ -83,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navFirstname = navHeader.findViewById(R.id.navFirstname);
             navLastname = navHeader.findViewById(R.id.navLastName);
             navEmail = navHeader.findViewById(R.id.navEmail);
+
+            userID = auth.getCurrentUser().getUid();
 
             DocumentReference documentReference = fStore.collection("users").document(userID);
             documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {

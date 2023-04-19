@@ -17,7 +17,7 @@ public class SplashScreen extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(SplashScreen.this, Login.class);
+            Intent intent = new Intent(SplashScreen.this, MainActivity.class);
             startActivity(intent);
             finish();
         }, 2000);

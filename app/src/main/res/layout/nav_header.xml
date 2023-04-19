@@ -65,6 +65,6 @@
         android:fontFamily="@font/poppins_medium"
         android:text="Email"
         android:textColor="@color/black"
-        android:textSize="8pt"
+        android:textSize="6pt"
         android:layout_below="@+id/linear"/>
 </RelativeLayout>
