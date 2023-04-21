@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login"
-    android:background="@color/bg">
+    android:background="@color/bg"
+    tools:context=".Login">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/linear"
@@ -23,8 +23,7 @@
                 android:layout_width="250dp"
                 android:layout_height="250dp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/logo"
-                />
+                android:src="@drawable/logo" />
 
 
         </LinearLayout>
@@ -34,35 +33,32 @@
             android:id="@+id/inputFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_below="@+id/linear"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="50dp"
-            android:gravity="center">
-
+            android:gravity="center"
+            android:orientation="vertical">
 
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:helperText="Your Email"
-                app:helperTextTextColor="@color/black"
                 android:background="@drawable/edit_text"
                 app:endIconMode="clear_text"
-                app:startIconDrawable="@drawable/mail24"
-                >
+                app:helperText="Your Email"
+                app:helperTextTextColor="@color/black"
+                app:startIconDrawable="@drawable/mail24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
                     android:layout_width="340dp"
                     android:layout_height="60dp"
-                    android:inputType="textEmailAddress"
-                    android:hint="EMAIL"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
                     android:background="@drawable/edit_text"
                     android:fontFamily="@font/poppins_medium"
-                    />
+                    android:hint="EMAIL"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,10 +67,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                app:helperText="Your Password"
-                app:helperTextTextColor="@color/black"
                 android:background="@drawable/edit_text"
                 app:endIconMode="password_toggle"
+                app:helperText="Your Password"
+                app:helperTextTextColor="@color/black"
                 app:startIconDrawable="@drawable/padlock24"
 
                 >
@@ -83,13 +79,12 @@
                     android:id="@+id/password"
                     android:layout_width="340dp"
                     android:layout_height="60dp"
-                    android:inputType="textPassword"
-                    android:hint="PASSWORD"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
                     android:background="@drawable/edit_text"
                     android:fontFamily="@font/poppins_medium"
-                    />
+                    android:hint="PASSWORD"
+                    android:inputType="textPassword"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,29 +92,55 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Forgot Password?"
-                    android:textColor="@color/white"
                     android:layout_marginRight="5dp"
                     android:fontFamily="@font/poppins_medium"
-                    />
+                    android:text="Forgot Password?"
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/forgotPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reset Password"
-                    android:textColor="@color/orange"
                     android:fontFamily="@font/poppins_medium"
-                    />
+                    android:text="Reset Password"
+                    android:textColor="@color/orange" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Login using:"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/googleBtn"
+                    android:layout_width="90dp"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@color/white"
+                    android:src="@drawable/google" />
+
+                <ImageButton
+                    android:id="@+id/facebookBtn"
+                    android:layout_width="90dp"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@color/blue"
+                    android:src="@drawable/facebook" />
+
+            </LinearLayout>
 
 
             <ProgressBar
@@ -127,38 +148,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/loginBtn"
                 android:layout_width="246dp"
                 android:layout_height="61dp"
                 android:layout_marginTop="50dp"
-                android:textColor="@color/black"
-                android:backgroundTint="@color/gray"
                 android:background="@drawable/button"
+                android:backgroundTint="@color/gray"
                 android:fontFamily="@font/poppins_medium"
                 android:text="LOGIN"
-                android:textSize="16dp"
-                />
+                android:textColor="@color/black"
+                android:textSize="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account?"
-                android:fontFamily="@font/poppins_medium"
-                android:textColor="@color/white"
                 android:layout_marginTop="30dp"
-                />
+                android:fontFamily="@font/poppins_medium"
+                android:text="Don't have an account?"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/textViewRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REGISTER"
+                android:layout_marginLeft="5dp"
                 android:fontFamily="@font/poppins_medium"
-                android:textColor="@color/orange"
-                android:layout_marginLeft="5dp"/>
+                android:text="REGISTER"
+                android:textColor="@color/orange" />
 
         </LinearLayout>
 

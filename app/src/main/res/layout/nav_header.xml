@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,30 +10,19 @@
     android:orientation="vertical"
     android:padding="15dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/imageCardView"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/navProfilePic"
         android:layout_width="25pt"
         android:layout_height="25pt"
-        app:cardCornerRadius="15dp">
-
-        <ImageView
-            android:id="@+id/imageview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/mar"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="20dp"
-            />
-
-    </androidx.cardview.widget.CardView>
-
+        android:layout_marginTop="20dp"
+        android:src="@drawable/user_icon100" />
 
 
     <LinearLayout
         android:id="@+id/linear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageCardView"
+        android:layout_below="@id/navProfilePic"
         android:layout_marginTop="10dp">
 
         <TextView
@@ -62,9 +51,9 @@
         android:id="@+id/navEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/linear"
         android:fontFamily="@font/poppins_medium"
         android:text="Email"
         android:textColor="@color/black"
-        android:textSize="6pt"
-        android:layout_below="@+id/linear"/>
+        android:textSize="6pt" />
 </RelativeLayout>
