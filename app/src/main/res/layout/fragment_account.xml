@@ -6,20 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".Account">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/square"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profilePic"
-            android:layout_width="50pt"
-            android:layout_height="50pt"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/user_icon100" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePic"
+                android:layout_width="50pt"
+                android:layout_height="50pt"
+                android:layout_gravity="center"
+                android:layout_marginStart="147dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/user_icon100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/editProfilePic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="MissingConstraints" />
+
+            <ImageButton
+                android:id="@+id/editProfilePic"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="122dp"
+                android:layout_marginBottom="92dp"
+                android:src="@drawable/edit_25"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profilePic"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <LinearLayout
             android:id="@+id/linear1"
@@ -64,22 +97,42 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
+                android:layout_gravity="start"
+                android:layout_marginLeft="10dp"
                 android:drawableStart="@drawable/mail24"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Email"
                 android:textColor="@color/black"
                 android:textSize="9pt" />
 
-            <TextView
-                android:id="@+id/address"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/address24"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Address"
-                android:textColor="@color/black"
-                android:textSize="9pt" />
+                android:layout_gravity="start">
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:drawableStart="@drawable/address24"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="Address"
+                    android:textColor="@color/black"
+                    android:textSize="9pt" />
+
+                <ImageButton
+                    android:id="@+id/editAddress"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/edit_25"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

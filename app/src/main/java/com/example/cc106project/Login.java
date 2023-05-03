@@ -34,9 +34,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,25 +54,29 @@ public class Login extends AppCompatActivity {
     private TextView textViewRegister, forgotPassword;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    private FirebaseUser user;
-
+    private FirebaseUser currentUser;
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
     GoogleSignInAccount googleSignInAccount;
     CallbackManager callbackManager;
+    private static final int RC_SIGN_IN = 1;
+    private static final String TAG = "GOOGLE_AUTH";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.i("Login", "onCreate");
 
         //Firebase Email
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
 
         //Google
-        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
@@ -85,11 +91,7 @@ public class Login extends AppCompatActivity {
         facebookBtn = findViewById(R.id.facebookBtn);
         progressBar = findViewById(R.id.progressBar);
 
-        if (user != null || googleSignInAccount != null) {
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        isUserCurrentlyLoggedIn();
 
         textViewRegister.setOnClickListener(v -> {
             Intent intent = new Intent(Login.this, Register.class);
@@ -99,7 +101,7 @@ public class Login extends AppCompatActivity {
 
         googleBtn.setOnClickListener(v -> {
             Intent intent = googleSignInClient.getSignInIntent();
-            startActivityForResult(intent, 100);
+            startActivityForResult(intent, RC_SIGN_IN);
         });
 
         facebookBtn.setOnClickListener(v -> {
@@ -181,10 +183,14 @@ public class Login extends AppCompatActivity {
             String stringEmail = email.getText().toString();
             String stringPassword = password.getText().toString();
 
-            if (stringEmail.isEmpty() || stringPassword.isEmpty()) {
-                Toast.makeText(this, "Please enter your credentials", Toast.LENGTH_SHORT).show();
+            if (stringEmail.isEmpty()) {
+                email.setError("Enter your Email");
                 return;
-            } else {
+            }
+            if (stringPassword.isEmpty()){
+                password.setError("Enter your Password");
+                return;
+            }else {
 
                 loginBtn.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
@@ -226,11 +232,21 @@ public class Login extends AppCompatActivity {
 
     }
 
+    private void isUserCurrentlyLoggedIn() {
+        currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            Intent intent = new Intent(Login.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (!isConnectedToTheInternet(this)){
+        if (!isConnectedToTheInternet(this)) {
             internetConnectionDialog();
         }
     }
@@ -275,19 +291,33 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> googleSignInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                task.getResult(ApiException.class);
-                Log.i("Login", "Google Login Success");
-
-                Intent intent = new Intent(Login.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            } catch (Exception e) {
-                Log.e("Login", e.getMessage());
+                GoogleSignInAccount account = googleSignInAccountTask.getResult(ApiException.class);
+                fireBaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                Log.e("Login " + TAG, e.getMessage());
             }
         }
+    }
+
+    private void fireBaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Login " + TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(Login.this, "Login failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

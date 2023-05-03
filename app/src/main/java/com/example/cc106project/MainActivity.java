@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -34,12 +35,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +57,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.net.NetworkInterface;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     View navHeader;
     Toolbar toolbar;
     private FirebaseAuth auth;
-    private FirebaseUser user;
+    private FirebaseUser currentUser;
     private GoogleSignInOptions googleSignInOptions;
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInAccount googleSignInAccount;
@@ -80,9 +87,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
-        if (!isConnectedToTheInternet(this)){
+        Log.i("MainActivity", "onStart");
+
+        displayUserInfo();
+
+        if (!isConnectedToTheInternet(this)) {
             internetConnectionDialog();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("MainActivity", "onDestroy");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("MainActivity", "onStop");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("MainActivity", "onPause");
+
     }
 
     private void internetConnectionDialog() {
@@ -111,16 +143,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i("MainActivity", "onCreate");
 
         //Firebase Email
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        fStore = FirebaseFirestore.getInstance();
+//        user = auth.getCurrentUser();
+
 
         //Firebase Google sign in
-        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+//        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestEmail().build();
+//        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -133,15 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navLastname = navHeader.findViewById(R.id.navLastName);
         navEmail = navHeader.findViewById(R.id.navEmail);
         navProfilePic = navHeader.findViewById(R.id.navProfilePic);
-
-        //Checks if either login method tokens are null
-        if (user == null) {
-            checkIfGoogleSignedIn();
-
-        }
-        if (googleSignInAccount == null) {
-            checkIfEmailSignedIn();
-        }
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.nav_drawer_open, R.string.nav_drawer_close);
@@ -165,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void checkIfEmailSignedIn() {
-        if (user == null) {
+        if (currentUser == null) {
             FirebaseAuth.getInstance().signOut();
             Log.i("MainActivity", "Token Cleared by Email Sign in");
 
@@ -189,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (value != null) {
                         navFirstname.setText(value.getString("firstName"));
                         navLastname.setText(value.getString("lastName"));
-                        navEmail.setText(user.getEmail());
+                        navEmail.setText(currentUser.getEmail());
                     } else {
                         FirebaseAuth.getInstance().signOut();
 
@@ -202,34 +226,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void checkIfGoogleSignedIn() {
         if (googleSignInAccount == null) {
-            googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Log.i("MainActivity", "Google Token Cleared by Google sign in");
 
-                    Intent intent = new Intent(MainActivity.this, Login.class);
-                    startActivity(intent);
-                    finish();
+            Log.i("MainActivity", "Google Token Cleared by Google sign in");
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.i("MainActivity", e.getMessage());
-                }
-            });
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+            finish();
+
+
         } else {
-            toolbar.setTitle("Home");
-            String getEmail = googleSignInAccount.getEmail();
-            String getFirstName = googleSignInAccount.getGivenName();
-            String getLastName = googleSignInAccount.getFamilyName();
+            Log.i("MainActivity", "Displaying Account Info");
 
-            Glide.with(this).load(googleSignInAccount.getPhotoUrl())
-                    .centerCrop().into(navProfilePic);
+            FirebaseUser currentUser = auth.getCurrentUser();
 
-            navFirstname.setText(getFirstName);
-            navLastname.setText(getLastName);
-            navEmail.setText(getEmail);
+
         }
     }
 
@@ -271,36 +281,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(DialogInterface dialog, int which) {
 
                         //Logout
-                        if (user != null) {
-                            FirebaseAuth.getInstance().signOut();
+                        FirebaseAuth.getInstance().signOut();
 
-                            Log.i("MainActivity", "Logged Out");
+                        Log.i("MainActivity", "Logged Out");
 
-                            Intent intent = new Intent(MainActivity.this, Login.class);
-                            startActivity(intent);
-                            finish();
+                        Intent intent = new Intent(MainActivity.this, Login.class);
+                        startActivity(intent);
+                        finish();
 
-                            Toast.makeText(MainActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
-                        }
-                        if (googleSignInAccount != null) {
-                            googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Log.i("MainActivity", "Logged Out from Google");
+                        Toast.makeText(MainActivity.this, "Logged Out", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(MainActivity.this, Login.class);
-                                    startActivity(intent);
-                                    finish();
-
-                                    Toast.makeText(MainActivity.this, "Logged Out from Google", Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.i("MainActivity", e.getMessage());
-                                }
-                            });
-                        }
                     }
                 });
                 alert.setNegativeButton("No", (dialog, which) -> dialog.cancel());
@@ -318,5 +308,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void displayUserInfo() {
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        fStore = FirebaseFirestore.getInstance();
+
+        if (currentUser != null) {
+            Log.i("MainActivity", "User: " + currentUser);
+
+            toolbar.setTitle("Home");
+            String getEmail = currentUser.getEmail();
+            String getFirstName = currentUser.getDisplayName();
+            String getProfilePic = String.valueOf(currentUser.getPhotoUrl());
+
+            googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
+            Log.i("MainActivity", "User DisplayName: " + getFirstName);
+
+            if (googleSignInAccount == null) {
+                navProfilePic.setImageResource(R.drawable.user_icon100);
+
+            }else{
+                Glide.with(this).load(getProfilePic)
+                        .centerCrop().into(navProfilePic);
+
+            }
+
+
+            navFirstname.setText(getFirstName);
+//            navLastname.setText(getLastName);
+            navEmail.setText(getEmail);
+
+            userID = auth.getCurrentUser().getUid();
+            Log.i("MainActivity", "UserID: " + userID);
+
+            if (userID != null) {
+                DocumentReference documentReference = fStore.collection("users").document(userID);
+                documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                        if (value != null) {
+                            navFirstname.setText(value.getString("firstName"));
+                            navLastname.setText(value.getString("lastName"));
+                            navEmail.setText(currentUser.getEmail());
+                        } else {
+                            FirebaseAuth.getInstance().signOut();
+
+                        }
+
+                    }
+                });
+            }
+
+
+        } else {
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cc106project;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ public class Account extends Fragment {
 
     private TextView firstName, lastName, email, address;
     private ImageView profilePicture;
+    private ImageButton editAddress;
     FirebaseAuth auth;
     FirebaseFirestore fStore;
     FirebaseUser user;
@@ -45,15 +48,13 @@ public class Account extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        fStore = FirebaseFirestore.getInstance();
 
         //Firebase Google sign in
-        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(getContext(), googleSignInOptions);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
-
-
-
 
     }
 
@@ -103,6 +104,48 @@ public class Account extends Fragment {
         }
     }
 
+    public void displayUserInfo() {
+        FirebaseUser currentUser = auth.getCurrentUser();
+        fStore = FirebaseFirestore.getInstance();
+
+        if (currentUser != null) {
+            Log.i("Account", "User: " + currentUser);
+
+            String getEmail = currentUser.getEmail();
+            String getFirstName = currentUser.getDisplayName();
+
+            Glide.with(getContext()).load(currentUser.getPhotoUrl())
+                    .centerCrop().into(profilePicture);
+
+            firstName.setText(getFirstName);
+//            navLastname.setText(getLastName);
+            email.setText(getEmail);
+
+            userID = auth.getCurrentUser().getUid();
+
+            if (userID != null) {
+                DocumentReference documentReference = fStore.collection("users").document(userID);
+                documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                        if (value != null) {
+                            firstName.setText(value.getString("firstName"));
+                            lastName.setText(value.getString("lastName"));
+                            email.setText(getEmail);
+                            address.setText(value.getString("address"));
+                        }
+
+                    }
+                });
+            }
+
+
+        } else {
+            Intent intent = new Intent(getContext(), Login.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,14 +158,14 @@ public class Account extends Fragment {
         email = view.findViewById(R.id.email);
         address = view.findViewById(R.id.address);
         profilePicture = view.findViewById(R.id.profilePic);
+        editAddress = view.findViewById(R.id.editAddress);
 
-        if (user == null) {
-            checkIfGoogleSignedIn();
+        displayUserInfo();
 
-        }
-        if (googleSignInAccount == null) {
-            checkIfEmailSignedIn();
-        }
+        editAddress.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AddAddress.class);
+            startActivity(intent);
+        });
 
         return view;
     }
