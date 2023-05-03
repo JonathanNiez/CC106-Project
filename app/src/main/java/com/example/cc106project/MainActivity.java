@@ -261,6 +261,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                         new Account()).commit();
                 break;
+            case R.id.orders:
+                toolbar.setTitle("Orders");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
+                        new Orders()).commit();
+                break;
             case R.id.settings:
                 toolbar.setTitle("Settings");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
@@ -319,6 +324,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("MainActivity", "User: " + currentUser);
 
             toolbar.setTitle("Home");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
+                    new Home()).commit();
+
             String getEmail = currentUser.getEmail();
             String getFirstName = currentUser.getDisplayName();
             String getProfilePic = String.valueOf(currentUser.getPhotoUrl());
@@ -327,10 +335,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             Log.i("MainActivity", "User DisplayName: " + getFirstName);
 
-            if (googleSignInAccount == null) {
+            if (getProfilePic == null) {
                 navProfilePic.setImageResource(R.drawable.user_icon100);
 
-            }else{
+            } else {
                 Glide.with(this).load(getProfilePic)
                         .centerCrop().into(navProfilePic);
 

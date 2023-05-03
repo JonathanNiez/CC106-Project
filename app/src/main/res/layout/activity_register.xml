@@ -181,11 +181,11 @@
                     android:backgroundTint="@color/white"/>
 
                 <ImageButton
-                    android:id="@+id/facebookBtn"
+                    android:id="@+id/phoneNumberBtn"
                     android:layout_width="90dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/facebook"
-                    android:backgroundTint="@color/blue"
+                    android:src="@drawable/phone"
+                    android:backgroundTint="@color/white"
                     />
 
             </LinearLayout>

@@ -134,11 +134,11 @@
                     android:src="@drawable/google" />
 
                 <ImageButton
-                    android:id="@+id/facebookBtn"
+                    android:id="@+id/phoneNumberBtn"
                     android:layout_width="90dp"
                     android:layout_height="60dp"
-                    android:backgroundTint="@color/blue"
-                    android:src="@drawable/facebook" />
+                    android:backgroundTint="@color/white"
+                    android:src="@drawable/phone" />
 
             </LinearLayout>
 
@@ -162,10 +162,18 @@
                 android:textColor="@color/black"
                 android:textSize="16dp" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_below="@+id/inputFields"
+            android:layout_centerHorizontal="true">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Don't have an account?"
                 android:textColor="@color/white" />
@@ -178,6 +186,8 @@
                 android:fontFamily="@font/poppins_medium"
                 android:text="REGISTER"
                 android:textColor="@color/orange" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
