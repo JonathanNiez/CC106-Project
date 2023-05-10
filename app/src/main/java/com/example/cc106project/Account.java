@@ -64,12 +64,15 @@ public class Account extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.i("Account", "onStart");
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
+        Log.i("Account", "onStop");
     }
 
     @Override
@@ -208,6 +211,10 @@ public class Account extends Fragment {
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_address, null);
 
 //            EditText emailForgotPassword = dialogView.findViewById(R.id.emailForgotPassword);
+            streetAddress = dialogView.findViewById(R.id.streetAddress);
+            province = dialogView.findViewById(R.id.province);
+            city = dialogView.findViewById(R.id.city);
+            postalCode = dialogView.findViewById(R.id.postalCode);
 
             builder.setView(dialogView);
             AlertDialog alertDialog = builder.create();
@@ -236,16 +243,17 @@ public class Account extends Fragment {
                                 @Override
                                 public void onSuccess(Void unused) {
 
-                                    Intent intent = new Intent(getContext(), Login.class);
-                                    startActivity(intent);
+                                    alertDialog.dismiss();
 
-                                    Log.i("AddAddress", "UserID" + userID);
+                                    Toast.makeText(getContext(), "Address Successfully Edited", Toast.LENGTH_SHORT).show();
+                                    Log.i("Account",  "Address Successfully Edited " + "UserID" + userID);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
 
-                                    Log.e("AddAddress", e.getMessage());
+                                    Toast.makeText(getContext(), "Address Failed to Edit", Toast.LENGTH_SHORT).show();
+                                    Log.e("Account",  "Address Failed to Edit " + "UserID" + userID);
                                 }
                             });
 

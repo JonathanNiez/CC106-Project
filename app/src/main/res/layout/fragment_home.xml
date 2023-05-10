@@ -8,21 +8,22 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/mar"
+        android:layout_width="100pt"
+        android:layout_height="100pt"
+        android:src="@drawable/logo"
         android:scaleType="centerCrop"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/imageView"
         android:layout_centerInParent="true"
-        android:text="Did you know? \n
-That you are reading this using your eyes"
+        android:text="Thank you for using the App"
         android:textAlignment="center"
+        android:fontFamily="@font/poppins_medium"
         android:textColor="@color/black"
-        android:textSize="15pt"
-        android:layout_below="@id/imageView"/>
+        android:textSize="15pt" />
 
 </RelativeLayout>

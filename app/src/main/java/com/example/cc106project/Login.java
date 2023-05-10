@@ -108,7 +108,6 @@ public class Login extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
-
         callbackManager = CallbackManager.Factory.create();
 
         email = findViewById(R.id.email);
