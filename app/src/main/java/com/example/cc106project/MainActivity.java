@@ -353,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         navLastname.setText(getLastName);
                         navEmail.setText(getEmail);
 
+                        //if profile pic is not google
                         if (getProfilePic != null) {
                             Glide.with(MainActivity.this).load(getProfilePic)
                                     .centerCrop().into(navProfilePic);
