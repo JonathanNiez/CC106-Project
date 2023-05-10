@@ -69,6 +69,7 @@ public class OrderParts extends Fragment {
         sellBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), Sell.class);
             startActivity(intent);
+            //yeah
         });
 
         return view;
