@@ -39,6 +39,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
@@ -50,12 +55,39 @@ public class Login extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private FirebaseFirestore fStore;
+
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
     GoogleSignInAccount googleSignInAccount;
     CallbackManager callbackManager;
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "GOOGLE_AUTH";
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Log.i("Login", "onStart");
+
+        if (!isConnectedToTheInternet(this)) {
+            internetConnectionDialog();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("Login", "onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("Login", "onDestroy");
+
+    }
 
 
     @Override
@@ -67,6 +99,7 @@ public class Login extends AppCompatActivity {
         //Firebase Email
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        fStore = FirebaseFirestore.getInstance();
 
         //Google
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -74,6 +107,7 @@ public class Login extends AppCompatActivity {
                 .requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -86,7 +120,7 @@ public class Login extends AppCompatActivity {
         phoneNumberBtn = findViewById(R.id.phoneNumberBtn);
         progressBar = findViewById(R.id.progressBar);
 
-        isUserCurrentlyLoggedIn();
+//        isUserCurrentlyLoggedIn();
 
         textViewRegister.setOnClickListener(v -> {
             Intent intent = new Intent(Login.this, Register.class);
@@ -95,8 +129,14 @@ public class Login extends AppCompatActivity {
         });
 
         googleBtn.setOnClickListener(v -> {
-            Intent intent = googleSignInClient.getSignInIntent();
-            startActivityForResult(intent, RC_SIGN_IN);
+
+            if (!isConnectedToTheInternet(this)) {
+                internetConnectionDialog();
+            } else {
+                Intent intent = googleSignInClient.getSignInIntent();
+                startActivityForResult(intent, RC_SIGN_IN);
+
+            }
         });
 
         phoneNumberBtn.setOnClickListener(v -> {
@@ -119,7 +159,6 @@ public class Login extends AppCompatActivity {
 
                     if (stringForgotPasswordEmail.isEmpty()) {
                         Toast.makeText(Login.this, "Enter your Email", Toast.LENGTH_SHORT).show();
-                        return;
                     } else {
                         mAuth.sendPasswordResetEmail(stringForgotPasswordEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -156,55 +195,60 @@ public class Login extends AppCompatActivity {
         });
 
         loginBtn.setOnClickListener(v -> {
+            if (!isConnectedToTheInternet(this)) {
+                internetConnectionDialog();
+            } else {
+                String stringEmail = email.getText().toString();
+                String stringPassword = password.getText().toString();
 
-            String stringEmail = email.getText().toString();
-            String stringPassword = password.getText().toString();
+                if (stringEmail.isEmpty()) {
+                    email.setError("Enter your Email");
+                    return;
+                }
+                if (stringPassword.isEmpty()) {
+                    password.setError("Enter your Password");
+                    return;
+                } else {
 
-            if (stringEmail.isEmpty()) {
-                email.setError("Enter your Email");
-                return;
-            }
-            if (stringPassword.isEmpty()){
-                password.setError("Enter your Password");
-                return;
-            }else {
+                    loginBtn.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    try {
+                        mAuth.signInWithEmailAndPassword(stringEmail, stringPassword).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
 
-                loginBtn.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                try {
-                    mAuth.signInWithEmailAndPassword(stringEmail, stringPassword).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
+                                Log.i("Login", "Logging In");
 
-                            Log.i("Login", "Logging In");
+                                Toast.makeText(Login.this, "Login Success", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
 
-                            Toast.makeText(Login.this, "Login Success", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(Login.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                                loginBtn.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
 
-                            loginBtn.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
+                                Toast.makeText(Login.this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
+                                Log.e("Login", e.getMessage());
 
-                            Toast.makeText(Login.this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
-                            Log.e("Login", e.getMessage());
+                            }
+                        });
+                    } catch (Exception e) {
+                        loginBtn.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
-                        }
-                    });
-                } catch (Exception e) {
-                    loginBtn.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
+                        Toast.makeText(Login.this, e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-                    Toast.makeText(Login.this, e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
                 }
 
             }
+
         });
 
     }
@@ -219,14 +263,6 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (!isConnectedToTheInternet(this)) {
-            internetConnectionDialog();
-        }
-    }
 
     private boolean isConnectedToTheInternet(Login login) {
         ConnectivityManager connectivityManager = (ConnectivityManager)
@@ -265,6 +301,8 @@ public class Login extends AppCompatActivity {
         alertDialog.show();
     }
 
+
+    //google login
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -277,24 +315,55 @@ public class Login extends AppCompatActivity {
                 Log.e("Login " + TAG, e.getMessage());
             }
         }
-    }
 
+    }
     private void fireBaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("Login " + TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(Login.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(Login.this, "Login failed", Toast.LENGTH_SHORT).show();
+        fStore = FirebaseFirestore.getInstance();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        if (account != null) {
+
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("Login" + " " + TAG, "signInWithCredential:success");
+                                FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                                if (currentUser != null) {
+                                    String userId = currentUser.getUid();
+                                    String email = account.getEmail();
+                                    String name = account.getDisplayName();
+                                    String profilePic = String.valueOf(account.getPhotoUrl());
+
+                                    Map<String, Object> user = new HashMap<>();
+                                    user.put("email", email);
+                                    user.put("firstName", name);
+                                    user.put("profilePicUrl", profilePic);
+                                    user.put("userID", userId);
+                                    fStore.collection("users").document(userId).set(user);
+
+                                    Log.d("Login" + " " + TAG, "signInWithCredential:success");
+                                    Intent intent = new Intent(Login.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+                            } else {
+                                Toast.makeText(Login.this, "Login failed", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            Log.d(TAG, "signInWithCredential:failed");
+
+            Intent intent = new Intent(Login.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
+        }
     }
+
 }

@@ -55,6 +55,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.ktx.Firebase;
 
 import java.net.NetworkInterface;
 import java.util.HashMap;
@@ -321,58 +322,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fStore = FirebaseFirestore.getInstance();
 
         if (currentUser != null) {
-            Log.i("MainActivity", "User: " + currentUser);
+
+            Log.i("MainActivity", "User is Logged-in");
+
+            userID = currentUser.getUid();
+//            googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
             toolbar.setTitle("Home");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                     new Home()).commit();
 
-            String getEmail = currentUser.getEmail();
-            String getFirstName = currentUser.getDisplayName();
-            String getProfilePic = String.valueOf(currentUser.getPhotoUrl());
+            Log.i("MainActivity", "User: " + currentUser);
 
-            googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+            DocumentReference documentReference = fStore.collection("users").document(userID);
+            documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-            Log.i("MainActivity", "User DisplayName: " + getFirstName);
+                    if (value != null) {
+                        String getEmail = (value.getString("email"));
+                        String getFirstName = (value.getString("firstName"));
+                        String getLastName = (value.getString("lastName"));
+                        String getProfilePic = value.getString("profilePicUrl");
 
-            if (getProfilePic == null) {
-                navProfilePic.setImageResource(R.drawable.user_icon100);
+                        Log.i("MainActivity", "User Full Name: " + getFirstName + "" + getLastName);
+                        Log.i("MainActivity", "UserID: " + userID);
+                        Log.i("MainActivity", "User Email: " + getEmail);
 
-            } else {
-                Glide.with(this).load(getProfilePic)
-                        .centerCrop().into(navProfilePic);
+                        navFirstname.setText(getFirstName);
+                        navLastname.setText(getLastName);
+                        navEmail.setText(getEmail);
 
-            }
-
-
-            navFirstname.setText(getFirstName);
-//            navLastname.setText(getLastName);
-            navEmail.setText(getEmail);
-
-            userID = auth.getCurrentUser().getUid();
-            Log.i("MainActivity", "UserID: " + userID);
-
-            if (userID != null) {
-                DocumentReference documentReference = fStore.collection("users").document(userID);
-                documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                        if (value != null) {
-                            navFirstname.setText(value.getString("firstName"));
-                            navLastname.setText(value.getString("lastName"));
-                            navEmail.setText(currentUser.getEmail());
-                        } else {
-                            FirebaseAuth.getInstance().signOut();
-
+                        if (getProfilePic != null) {
+                            Glide.with(MainActivity.this).load(getProfilePic)
+                                    .centerCrop().into(navProfilePic);
                         }
 
+                    } else {
+                        Log.e("Account", error.getMessage());
                     }
-                });
-            }
 
-
+                }
+            });
         } else {
+            Log.i("MainActivity", "User is not Logged-in");
+
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
             finish();

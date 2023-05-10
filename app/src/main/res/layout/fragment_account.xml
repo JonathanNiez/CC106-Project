@@ -30,14 +30,14 @@
                 android:layout_marginTop="16dp"
                 android:src="@drawable/user_icon100"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editProfilePic"
+                app:layout_constraintEnd_toStartOf="@+id/editProfilePicBtn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingConstraints" />
 
             <ImageButton
-                android:id="@+id/editProfilePic"
+                android:id="@+id/editProfilePicBtn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="end"

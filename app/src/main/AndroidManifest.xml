@@ -15,6 +15,9 @@
         android:theme="@style/Theme.CC106Project"
         tools:targetApi="31">
         <activity
+            android:name=".Sell"
+            android:exported="false" />
+        <activity
             android:name=".AddAddress"
             android:exported="false" />
 

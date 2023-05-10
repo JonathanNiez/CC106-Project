@@ -1,5 +1,6 @@
 package com.example.cc106project;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +16,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class OrderParts extends Fragment {
+
+    private Button sellBtn;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,7 +40,6 @@ public class OrderParts extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment OrderParts.
      */
-    // TODO: Rename and change types and number of parameters
     public static OrderParts newInstance(String param1, String param2) {
         OrderParts fragment = new OrderParts();
         Bundle args = new Bundle();
@@ -59,6 +62,15 @@ public class OrderParts extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_order_parts, container, false);
+        View view = inflater.inflate(R.layout.fragment_order_parts, container, false);
+
+        sellBtn = view.findViewById(R.id.sellBtn);
+
+        sellBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), Sell.class);
+            startActivity(intent);
+        });
+
+        return view;
     }
 }

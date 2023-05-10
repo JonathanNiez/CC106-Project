@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:padding="10dp"
+    android:id="@+id/editAddress">
+
+    <LinearLayout
+        android:id="@+id/inputFields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@drawable/white_box">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edit_text"
+            app:endIconMode="clear_text"
+            app:helperText="*Required"
+            app:helperTextTextColor="@color/red"
+            app:startIconDrawable="@drawable/address24">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/streetAddress"
+                android:layout_width="340dp"
+                android:layout_height="60dp"
+                android:background="@drawable/edit_text"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="STREET ADDRESS"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edit_text"
+            app:endIconMode="clear_text"
+            app:helperText="*Required"
+            app:helperTextTextColor="@color/red"
+            app:startIconDrawable="@drawable/address24">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/city"
+                android:layout_width="340dp"
+                android:layout_height="60dp"
+                android:background="@drawable/edit_text"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="CITY"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edit_text"
+            app:endIconMode="clear_text"
+            app:helperText="*Required"
+            app:helperTextTextColor="@color/red"
+            app:startIconDrawable="@drawable/address24">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/province"
+                android:layout_width="340dp"
+                android:layout_height="60dp"
+                android:background="@drawable/edit_text"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="PROVINCE"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edit_text"
+            app:endIconMode="clear_text"
+            app:helperText="*Required"
+            app:helperTextTextColor="@color/red"
+            app:startIconDrawable="@drawable/address24">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/postalCode"
+                android:layout_width="340dp"
+                android:layout_height="60dp"
+                android:background="@drawable/edit_text"
+                android:fontFamily="@font/poppins_medium"
+                android:hint="POSTAL CODE"
+                android:inputType="number"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/acceptBtn"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/button"
+                android:backgroundTint="@color/gray"
+                android:fontFamily="@font/poppins_medium"
+                android:text="ACCEPT"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/cancelBtn"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/button"
+                android:backgroundTint="@color/gray"
+                android:fontFamily="@font/poppins_medium"
+                android:text="CANCEL"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

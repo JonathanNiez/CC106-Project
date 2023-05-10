@@ -54,6 +54,28 @@ public class Register extends AppCompatActivity {
     private static final String TAG = "GOOGLE_AUTH";
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        Log.i("Register", "onStart");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("Register", "onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("Register", "onDestroy");
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
@@ -96,7 +118,6 @@ public class Register extends AppCompatActivity {
         });
 
         registerBtn.setOnClickListener(v -> {
-
             String stringFirstName = firstName.getText().toString();
             String stringLastName = lastName.getText().toString();
             String stringEmail = email.getText().toString().trim();
@@ -108,7 +129,6 @@ public class Register extends AppCompatActivity {
                     || stringLastName.isEmpty()) {
 //                Toast.makeText(this, "Please input the fields", Toast.LENGTH_LONG).show();
                 email.setError("Enter you Email");
-                return;
             } else if (stringPassword.equals(stringConPassword)) {
                 progressBar.setVisibility(View.VISIBLE);
                 registerBtn.setVisibility(View.GONE);
@@ -126,7 +146,9 @@ public class Register extends AppCompatActivity {
                                 Map<String, Object> user = new HashMap<>();
                                 user.put("firstName", stringFirstName);
                                 user.put("lastName", stringLastName);
+                                user.put("email", stringEmail);
                                 user.put("userID", userID);
+                                user.put("profilePicUrl", null);
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -189,21 +211,51 @@ public class Register extends AppCompatActivity {
 
     private void fireBaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(Register.this, Login.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(Register.this, "Login failed", Toast.LENGTH_SHORT).show();
+        fStore = FirebaseFirestore.getInstance();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        if (account != null) {
+
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("Register" + " " + TAG, "signInWithCredential:success");
+                                FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                                if (currentUser != null){
+                                    String userId = currentUser.getUid();
+                                    String email = account.getEmail();
+                                    String name = account.getDisplayName();
+                                    String profilePic = String.valueOf(account.getPhotoUrl());
+
+                                    Map<String, Object> user = new HashMap<>();
+                                    user.put("email", email);
+                                    user.put("firstName", name);
+                                    user.put("profilePicUrl", profilePic);
+                                    user.put("userID", userId);
+                                    fStore.collection("users").document(userId).set(user);
+
+                                    Log.d("Register" + " " + TAG, "signInWithCredential:success");
+                                    Intent intent = new Intent(Register.this, Login.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+                            } else {
+                                Toast.makeText(Register.this, "Login failed", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            Log.d(TAG, "signInWithCredential:failed");
+
+            Intent intent = new Intent(Register.this, Login.class);
+            startActivity(intent);
+            finish();
+
+        }
     }
 
 
