@@ -3,12 +3,13 @@
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
     <string name="peso_sign">₱</string>
+    <string name="about">This app only uses meet-up payment method to ensure the
+    ambot unsay ibutang diri HAHAHAHAHA</string>
 
     <string name="facebook_app_id">1212277976150858</string>
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">4ca8d1036a34072676ce3684a5b6e562</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

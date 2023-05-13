@@ -23,33 +23,42 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profilePic"
-                android:layout_width="50pt"
-                android:layout_height="50pt"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="147dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="155dp"
+                android:layout_marginTop="28dp"
                 android:src="@drawable/user_icon100"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/editProfilePicBtn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingConstraints" />
 
             <ImageButton
                 android:id="@+id/editProfilePicBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="122dp"
-                android:layout_marginBottom="92dp"
+                android:layout_marginBottom="52dp"
                 android:src="@drawable/edit_25"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/profilePic"
-                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints" />
+
+            <ImageButton
+                android:id="@+id/clearProfilePicBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/remove"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profilePic"
+                app:layout_constraintTop_toBottomOf="@+id/editProfilePicBtn"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="MissingConstraints" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

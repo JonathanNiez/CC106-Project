@@ -2,6 +2,7 @@ package com.example.cc106project;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -40,6 +41,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +53,7 @@ public class Account extends Fragment {
 
     private TextView firstName, lastName, email, address;
     private ImageView profilePicture;
-    private ImageButton editAddress, editProfilePicBtn;
+    private ImageButton editAddress, editProfilePicBtn, clearProfilePicBtn;
     private EditText streetAddress, province, city, postalCode;
 
     FirebaseAuth auth;
@@ -59,7 +63,8 @@ public class Account extends Fragment {
     GoogleSignInClient googleSignInClient;
     GoogleSignInAccount googleSignInAccount;
     String userID;
-    private static final int REQUEST_OPEN_GALLERY = 1;
+    int REQUEST_CODE = 69;
+    Uri imageUri;
 
     @Override
     public void onStart() {
@@ -91,6 +96,7 @@ public class Account extends Fragment {
 //        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 
     }
+
 
     private void checkIfGoogleSignedIn() {
         if (googleSignInAccount != null) {
@@ -139,9 +145,7 @@ public class Account extends Fragment {
     }
 
     public void displayUserInfo() {
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-        fStore = FirebaseFirestore.getInstance();
+
 
         if (currentUser != null) {
             userID = currentUser.getUid();
@@ -162,8 +166,9 @@ public class Account extends Fragment {
                         address.setText(value.getString("address"));
 
                         if (getProfilePic != null) {
-                            Glide.with(getActivity()).load(currentUser.getPhotoUrl())
+                            Glide.with(getContext()).load(getProfilePic)
                                     .centerCrop().into(profilePicture);
+                            Log.i("Account", "Displaying Profile Picture");
 
                         }
 
@@ -183,9 +188,11 @@ public class Account extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_OPEN_GALLERY && resultCode == RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
-            Toast.makeText(getActivity(), "Selected image: " + selectedImageUri.toString(), Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE && data != null && data.getData() != null) {
+            imageUri = data.getData();
+
+            userID = currentUser.getUid();
+            uploadImageToFirebaseStorage(imageUri, userID);
         }
     }
 
@@ -203,6 +210,11 @@ public class Account extends Fragment {
         profilePicture = view.findViewById(R.id.profilePic);
         editAddress = view.findViewById(R.id.editAddress);
         editProfilePicBtn = view.findViewById(R.id.editProfilePicBtn);
+        clearProfilePicBtn = view.findViewById(R.id.clearProfilePicBtn);
+
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        fStore = FirebaseFirestore.getInstance();
 
         displayUserInfo();
 
@@ -246,14 +258,14 @@ public class Account extends Fragment {
                                     alertDialog.dismiss();
 
                                     Toast.makeText(getContext(), "Address Successfully Edited", Toast.LENGTH_SHORT).show();
-                                    Log.i("Account",  "Address Successfully Edited " + "UserID" + userID);
+                                    Log.i("Account", "Address Successfully Edited " + "UserID" + userID);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
 
                                     Toast.makeText(getContext(), "Address Failed to Edit", Toast.LENGTH_SHORT).show();
-                                    Log.e("Account",  "Address Failed to Edit " + "UserID" + userID);
+                                    Log.e("Account", "Address Failed to Edit " + "UserID" + userID);
                                 }
                             });
 
@@ -278,13 +290,88 @@ public class Account extends Fragment {
 
         });
 
+        clearProfilePicBtn.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Account");
+            alert.setMessage("Remove Profile Picture?");
+            alert.setCancelable(true);
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    userID = auth.getCurrentUser().getUid();
+                    DocumentReference documentReference = fStore.collection("users").document(userID);
+
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("profilePicUrl", null);
+                    documentReference.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+
+                            Log.i("Account", "Profile Picture Removed Successfully");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Account", e.getMessage());
+                            dialog.cancel();
+                        }
+                    });
+
+
+                }
+            });
+            alert.setNegativeButton("No", (dialog, which) -> dialog.cancel());
+            alert.show();
+
+        });
+
         editProfilePicBtn.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_OPEN_GALLERY);
+            startActivityForResult(intent, REQUEST_CODE);
         });
 
         return view;
     }
+
+    private void uploadImageToFirebaseStorage(Uri imageUri, String xUserID) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imagesRef = storageRef.child("images");
+        StorageReference fileRef = imagesRef.child(imageUri.getLastPathSegment());
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Get the download URL of the uploaded image
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String imageFormat = ".png";
+
+                        // Save the download URL in Firestore
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("profilePicUrl", uri.toString());
+                        fStore.collection("users").document(String.valueOf(xUserID)).update(data);
+                        profilePicture.setImageURI(imageUri);
+
+//                        Toast.makeText(getContext(), "Profile Picture Changed Successfully", Toast.LENGTH_SHORT).show();
+                        Log.i("Account", "Profile Picture Changed Successfully");
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Profile Picture Failed to Upload", Toast.LENGTH_SHORT).show();
+                        Log.e("Account", "Profile Picture Failed to Upload");
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Profile Picture Failed to Upload", Toast.LENGTH_SHORT).show();
+                Log.e("Account", e.getMessage());
+            }
+        });
+    }
+
 }
 

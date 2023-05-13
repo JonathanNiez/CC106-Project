@@ -257,6 +257,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                         new OrderParts()).commit();
                 break;
+            case R.id.myProducts:
+                toolbar.setTitle("My Products");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
+                        new MyProducts()).commit();
+                break;
             case R.id.account:
                 toolbar.setTitle("Account");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
@@ -277,6 +282,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                         new Messaging()).commit();
                 break;
+            case R.id.about:
+                toolbar.setTitle("About");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
+                        new About()).commit();
+                break;
+
             case R.id.logout:
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle("Logout");
@@ -357,6 +368,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (getProfilePic != null) {
                             Glide.with(MainActivity.this).load(getProfilePic)
                                     .centerCrop().into(navProfilePic);
+
+                            Log.i("MainActivity", "Displaying Profile Picture");
+
+                        }
+                        else {
+                            navProfilePic.setImageResource(R.drawable.user_icon100);
                         }
 
                     } else {

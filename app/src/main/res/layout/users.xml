@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="fill"
     android:layout_margin="10dp"
-    android:background="@color/light_gray"
+    android:backgroundTint="@color/light_gray"
     android:elevation="7dp"
     app:cardCornerRadius="10dp">
 
@@ -42,6 +42,14 @@
             android:textColor="@color/black"
             android:layout_centerVertical="true"
             android:textSize="8pt" />
+
+        <ImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/chat"
+            android:padding="5dp"
+            android:layout_alignParentRight="true"
+            />
 
 
     </RelativeLayout>

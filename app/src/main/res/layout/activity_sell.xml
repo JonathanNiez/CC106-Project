@@ -14,13 +14,23 @@
         android:src="@drawable/image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20pt"
-        android:layout_marginBottom="20pt"/>
+       />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/uploadImageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Image"
+        android:layout_below="@id/itemImage"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button"
+        android:layout_marginBottom="20dp"/>
 
     <LinearLayout
         android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/itemImage"
+        android:layout_below="@id/uploadImageBtn"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -43,6 +53,17 @@
             android:inputType="numberDecimal"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"/>
+
+        <EditText
+            android:id="@+id/itemStock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Stock"
+            android:textSize="7pt"
+            android:inputType="number"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+
 
         <Spinner
             android:id="@+id/itemCategory"

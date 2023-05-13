@@ -341,6 +341,7 @@ public class Login extends AppCompatActivity {
                                     user.put("email", email);
                                     user.put("firstName", name);
                                     user.put("profilePicUrl", profilePic);
+                                    user.put("productsSold", 0);
                                     user.put("userID", userId);
                                     fStore.collection("users").document(userId).set(user);
 

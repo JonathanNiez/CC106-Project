@@ -56,7 +56,7 @@ public class AddAddress extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
 
         skipBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AddAddress.this, Login.class);
+            Intent intent = new Intent(AddAddress.this, MainActivity.class);
             startActivity(intent);
             finish();
         });

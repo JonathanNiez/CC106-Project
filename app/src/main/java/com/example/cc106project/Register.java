@@ -148,6 +148,7 @@ public class Register extends AppCompatActivity {
                                 user.put("lastName", stringLastName);
                                 user.put("email", stringEmail);
                                 user.put("userID", userID);
+                                user.put("productsSold", 0);
                                 user.put("profilePicUrl", null);
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -234,6 +235,7 @@ public class Register extends AppCompatActivity {
                                     user.put("email", email);
                                     user.put("firstName", name);
                                     user.put("profilePicUrl", profilePic);
+                                    user.put("productsSold", 0);
                                     user.put("userID", userId);
                                     fStore.collection("users").document(userId).set(user);
 

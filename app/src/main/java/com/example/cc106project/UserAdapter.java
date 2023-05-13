@@ -15,12 +15,12 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder>{
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private Context context;
     private ArrayList<Users> usersList;
 
-    public UserAdapter (Context context, ArrayList<Users> usersList){
+    public UserAdapter(Context context, ArrayList<Users> usersList) {
         this.context = context;
         this.usersList = usersList;
     }
@@ -28,7 +28,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.users, parent,  false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.users, parent, false);
         return new UserViewHolder(view);
     }
 
@@ -37,18 +37,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         Users users = usersList.get(position);
         holder.firstName.setText(users.getFirstName());
         holder.lastName.setText(users.getLastName());
-//        Glide.with(context).load(users.getProfilePic()).into(holder.profilePic);
-    }
 
+        if (users.getProfilePic() != null){
+            Glide.with(context).load(users.getProfilePic()).centerCrop().into(holder.profilePic);
+
+        }
+    }
 
 
     @Override
     public int getItemCount() {
 //        return usersList == null ? 0 : usersList.size();
-        return  usersList.size();
+        return usersList.size();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder{
+    public static class UserViewHolder extends RecyclerView.ViewHolder {
 
         public TextView firstName, lastName;
         public ImageView profilePic;
