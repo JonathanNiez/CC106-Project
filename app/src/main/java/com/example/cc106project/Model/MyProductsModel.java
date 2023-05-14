@@ -1,4 +1,4 @@
-package com.example.cc106project;
+package com.example.cc106project.Model;
 
 public class MyProductsModel {
 

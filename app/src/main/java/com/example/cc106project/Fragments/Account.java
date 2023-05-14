@@ -1,4 +1,4 @@
-package com.example.cc106project;
+package com.example.cc106project.Fragments;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -22,10 +22,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.cc106project.Login;
+import com.example.cc106project.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -55,21 +58,22 @@ public class Account extends Fragment {
     private ImageView profilePicture;
     private ImageButton editAddress, editProfilePicBtn, clearProfilePicBtn;
     private EditText streetAddress, province, city, postalCode;
-
-    FirebaseAuth auth;
-    FirebaseFirestore fStore;
-    FirebaseUser currentUser;
-    GoogleSignInOptions googleSignInOptions;
-    GoogleSignInClient googleSignInClient;
-    GoogleSignInAccount googleSignInAccount;
-    String userID;
-    int REQUEST_CODE = 69;
-    Uri imageUri;
+    private ProgressBar progressBar;
+    private FirebaseAuth auth;
+    private FirebaseFirestore fStore;
+    private FirebaseUser currentUser;
+    private GoogleSignInOptions googleSignInOptions;
+    private GoogleSignInClient googleSignInClient;
+    private GoogleSignInAccount googleSignInAccount;
+    private String userID;
+    private int REQUEST_CODE = 69;
+    private Uri imageUri;
+    private String TAG = "Account";
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("Account", "onStart");
+        Log.i(TAG, "onStart");
 
     }
 
@@ -77,12 +81,13 @@ public class Account extends Fragment {
     public void onStop() {
         super.onStop();
 
-        Log.i("Account", "onStop");
+        Log.i(TAG, "onStop");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
 
 
 //        auth = FirebaseAuth.getInstance();
@@ -150,12 +155,13 @@ public class Account extends Fragment {
         if (currentUser != null) {
             userID = currentUser.getUid();
 
-            Log.i("Account", "User: " + currentUser);
+            Log.i(TAG, "User: " + currentUser);
 
             DocumentReference documentReference = fStore.collection("users").document(userID);
             documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    progressBar.setVisibility(View.GONE);
 
                     if (value != null) {
                         String getProfilePic = value.getString("profilePicUrl");
@@ -169,11 +175,15 @@ public class Account extends Fragment {
                             Glide.with(getContext()).load(getProfilePic)
                                     .centerCrop().into(profilePicture);
                             Log.i("Account", "Displaying Profile Picture");
+                            clearProfilePicBtn.setVisibility(View.VISIBLE);
 
                         }
 
                     } else {
                         Log.e("Account", error.getMessage());
+                        clearProfilePicBtn.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+
                     }
 
                 }
@@ -202,6 +212,9 @@ public class Account extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
+
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
         firstName = view.findViewById(R.id.firstName);
         lastName = view.findViewById(R.id.lastName);
@@ -258,14 +271,14 @@ public class Account extends Fragment {
                                     alertDialog.dismiss();
 
                                     Toast.makeText(getContext(), "Address Successfully Edited", Toast.LENGTH_SHORT).show();
-                                    Log.i("Account", "Address Successfully Edited " + "UserID" + userID);
+                                    Log.i(TAG, "Address Successfully Edited " + "UserID" + userID);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
 
                                     Toast.makeText(getContext(), "Address Failed to Edit", Toast.LENGTH_SHORT).show();
-                                    Log.e("Account", "Address Failed to Edit " + "UserID" + userID);
+                                    Log.e(TAG, "Address Failed to Edit " + "UserID" + userID);
                                 }
                             });
 
@@ -307,12 +320,12 @@ public class Account extends Fragment {
                         @Override
                         public void onSuccess(Void unused) {
 
-                            Log.i("Account", "Profile Picture Removed Successfully");
+                            Log.i(TAG, "Profile Picture Removed Successfully");
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.e("Account", e.getMessage());
+                            Log.e(TAG, e.getMessage());
                             dialog.cancel();
                         }
                     });
@@ -353,14 +366,14 @@ public class Account extends Fragment {
                         profilePicture.setImageURI(imageUri);
 
 //                        Toast.makeText(getContext(), "Profile Picture Changed Successfully", Toast.LENGTH_SHORT).show();
-                        Log.i("Account", "Profile Picture Changed Successfully");
+                        Log.i(TAG, "Profile Picture Changed Successfully");
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getContext(), "Profile Picture Failed to Upload", Toast.LENGTH_SHORT).show();
-                        Log.e("Account", "Profile Picture Failed to Upload");
+                        Log.e(TAG, "Profile Picture Failed to Upload");
                     }
                 });
             }
@@ -368,7 +381,7 @@ public class Account extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getContext(), "Profile Picture Failed to Upload", Toast.LENGTH_SHORT).show();
-                Log.e("Account", e.getMessage());
+                Log.e(TAG, e.getMessage());
             }
         });
     }

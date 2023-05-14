@@ -1,12 +1,16 @@
-package com.example.cc106project;
+package com.example.cc106project.Model;
 
-import com.google.firebase.firestore.auth.User;
-
-public class Users {
+public class UsersModel {
 
     String firstName;
     String lastName;
     String profilePic;
+    String userID;
+
+    public String getUserID() {
+        return userID;
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -18,6 +22,10 @@ public class Users {
 
     public String getProfilePic() {
         return profilePic;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
 
@@ -35,11 +43,14 @@ public class Users {
         this.profilePic = profilePic;
     }
 
-    public Users(){}
+    public UsersModel() {
+    }
 
-    public Users(String firstName, String lastName, String profilePic) {
+    public UsersModel(String firstName, String lastName,
+                      String profilePic, String userID) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.profilePic = profilePic;
+        this.userID = userID;
     }
 }
