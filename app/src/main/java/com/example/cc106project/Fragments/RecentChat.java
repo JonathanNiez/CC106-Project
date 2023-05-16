@@ -72,21 +72,21 @@ public class RecentChat extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 stringUsersList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    ChatModel chatModel = dataSnapshot.getValue(ChatModel.class);
-
-                    assert chatModel != null;
-                    if (chatModel.getSender().equals(currentUser.getUid())) {
-                        stringUsersList.add(chatModel.getReceiver());
-
-                        Log.i(TAG, "User List: " + stringUsersList);
-
-                    }
-                    if (chatModel.getReceiver().equals(currentUser.getUid())) {
-                        stringUsersList.add(chatModel.getSender());
-
-                        Log.i(TAG, "User List: " + stringUsersList);
-
-                    }
+//                    ChatModel chatModel = dataSnapshot.getValue(ChatModel.class);
+//
+//                    assert chatModel != null;
+//                    if (chatModel.getSender().equals(currentUser.getUid())) {
+//                        stringUsersList.add(chatModel.getReceiver());
+//
+//                        Log.i(TAG, "User List: " + stringUsersList);
+//
+//                    }
+//                    if (chatModel.getReceiver().equals(currentUser.getUid())) {
+//                        stringUsersList.add(chatModel.getSender());
+//
+//                        Log.i(TAG, "User List: " + stringUsersList);
+//
+//                    }
                 }
 
 //                userAdapter = new UserAdapter(getContext(), usersArrayList);
@@ -134,7 +134,7 @@ public class RecentChat extends Fragment {
                     }
                     Log.i(TAG, "Displaying Recent Chat");
                 }
-                userAdapter = new UserAdapter(getContext(), usersModelArrayList);
+                userAdapter = new UserAdapter(getContext(), usersModelArrayList, false);
                 recyclerView.setAdapter(userAdapter);
             }
         }).addOnFailureListener(new OnFailureListener() {

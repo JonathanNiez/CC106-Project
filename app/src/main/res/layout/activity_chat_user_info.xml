@@ -6,22 +6,69 @@
     android:layout_height="match_parent"
     tools:context=".ChatUserInfo">
 
+    <Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/gray"
+        android:elevation="5dp"
+        android:navigationIcon="@drawable/back_icon" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"/>
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/toolBar"
         android:background="@drawable/square"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="20dp">
+        android:paddingBottom="20dp"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:layout_below="@id/toolBar">
+
+            <ImageView
+                android:id="@+id/chatInfoCoverPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/chatInfoProfilePic"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="150dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="150dp"
+                android:background="@drawable/picture_frame"
+                android:src="@drawable/user_icon100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chatInfoCoverPhoto"
+                app:layout_constraintVertical_bias="1.0"
+                tools:ignore="MissingConstraints" />
 
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/chatInfoProfilePic"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="28dp"
-            android:gravity="center"
-            android:src="@drawable/user_icon100" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +103,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -73,22 +119,40 @@
                 android:textSize="9pt" />
 
 
-                <TextView
-                    android:id="@+id/chatInfoAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:drawableStart="@drawable/address24"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="Address"
-                    android:textColor="@color/black"
-                    android:textSize="9pt" />
+            <TextView
+                android:id="@+id/chatInfoAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:drawableStart="@drawable/address24"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Address"
+                android:textColor="@color/black"
+                android:textSize="9pt" />
 
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Products: "
+        android:textColor="@color/black"
+        android:textSize="10pt"
+        android:fontFamily="@font/sourcesanspro_black"
+        android:layout_below="@id/linearLayout"
+        android:layout_centerHorizontal="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatUserInfoRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/textView"
+        tools:listitem="@layout/item_my_products" />
 
 </RelativeLayout>

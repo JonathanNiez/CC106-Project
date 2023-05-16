@@ -150,6 +150,8 @@ public class Register extends AppCompatActivity {
                                 user.put("userID", userID);
                                 user.put("productsSold", 0);
                                 user.put("profilePicUrl", null);
+                                user.put("coverPicUrl", null);
+                                user.put("isOnline", true);
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -237,6 +239,8 @@ public class Register extends AppCompatActivity {
                                     user.put("profilePicUrl", profilePic);
                                     user.put("productsSold", 0);
                                     user.put("userID", userId);
+                                    user.put("coverPicUrl", null);
+                                    user.put("isOnline", true);
                                     fStore.collection("users").document(userId).set(user);
 
                                     Log.d("Register" + " " + TAG, "signInWithCredential:success");

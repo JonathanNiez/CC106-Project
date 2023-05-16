@@ -5,6 +5,7 @@
     android:padding="10dp">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true">
@@ -29,6 +30,16 @@
             android:textColor="@color/black"
             android:textSize="8pt"
             android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/seen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chatUserMessage"
+            android:text="Seen"
+            android:layout_alignParentEnd="true"
+            android:textSize="7pt"
+            android:textColor="@color/black"/>
 
     </RelativeLayout>
 

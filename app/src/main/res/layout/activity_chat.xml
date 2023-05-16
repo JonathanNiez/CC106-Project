@@ -14,10 +14,8 @@
         android:elevation="5dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/black"
         app:navigationIcon="@drawable/back_icon"
         android:layout_alignParentStart="true">
-
 
 
         <RelativeLayout
@@ -110,7 +108,7 @@
             android:layout_marginBottom="5dp"
             android:textColor="@color/black"
             android:textSize="8pt"
-            android:hint="Type your message here..."
+            android:hint="Type a message..."
             android:layout_centerVertical="true"
             android:inputType="text" />
 
@@ -123,6 +121,5 @@
             android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
-
 
 </RelativeLayout>

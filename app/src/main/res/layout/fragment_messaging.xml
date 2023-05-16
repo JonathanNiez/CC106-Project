@@ -14,6 +14,6 @@
      android:layout_marginTop="10dp"
      android:layout_marginEnd="10dp"
      android:layout_marginBottom="10dp"
-     tools:listitem="@layout/usersModel"/>
+     tools:listitem="@layout/users"/>
 
 </RelativeLayout>

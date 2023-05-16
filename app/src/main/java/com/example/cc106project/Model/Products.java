@@ -1,8 +1,36 @@
 package com.example.cc106project.Model;
 
 public class Products {
+    private String itemName;
+    private String itemImage;
+    private String sellerID;
+    private String itemCategory;
+    private double itemPrice;
+    private int productID;
 
-    String itemName, itemImage, itemPrice;
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
+    public void setItemCategory(String itemCategory) {
+        this.itemCategory = itemCategory;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public String getSellerID() {
+        return sellerID;
+    }
+
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
+    }
 
     public String getItemName() {
         return itemName;
@@ -12,7 +40,7 @@ public class Products {
         return itemImage;
     }
 
-    public String getItemPrice() {
+    public double getItemPrice() {
         return itemPrice;
     }
 
@@ -26,16 +54,19 @@ public class Products {
     }
 
 
-    public void setItemPrice(String itemPrice) {
+    public void setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
     }
 
     public Products() {
     }
 
-    public Products(String itemName, String itemImage, String itemPrice) {
+    public Products(String itemName, String itemImage, double itemPrice, String sellerID, int productID, String itemCategory) {
         this.itemName = itemName;
         this.itemImage = itemImage;
         this.itemPrice = itemPrice;
+        this.sellerID = sellerID;
+        this.productID = productID;
+        this.itemCategory = itemCategory;
     }
 }

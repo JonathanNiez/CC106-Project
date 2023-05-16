@@ -2,11 +2,13 @@ package com.example.cc106project.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,10 +24,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     private Context context;
     private ArrayList<UsersModel> usersModelArrayList;
+    private boolean isOnline;
 
-    public UserAdapter(Context context, ArrayList<UsersModel> usersModelArrayList) {
+    public UserAdapter(Context context, ArrayList<UsersModel> usersModelArrayList, boolean isOnline) {
         this.context = context;
         this.usersModelArrayList = usersModelArrayList;
+        this.isOnline = isOnline;
     }
 
     @NonNull
@@ -41,8 +45,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.firstName.setText(usersModel.getFirstName());
         holder.lastName.setText(usersModel.getLastName());
 
-        if (usersModel.getProfilePic() != null) {
-            Glide.with(context).load(usersModel.getProfilePic()).centerCrop().into(holder.profilePic);
+        if (usersModel.getProfilePicUrl() != null) {
+            Glide.with(context).load(usersModel.getProfilePicUrl()).centerCrop().into(holder.profilePic);
+        }else {
+            holder.profilePic.setImageResource(R.drawable.user_icon100);
+        }
+
+        if (isOnline){
+            if (!usersModel.isOnline()){
+                holder.offlineStatus.setVisibility(View.VISIBLE);
+                holder.onlineStatus.setVisibility(View.GONE);
+            }else {
+                holder.onlineStatus.setVisibility(View.VISIBLE);
+                holder.offlineStatus.setVisibility(View.GONE);
+            }
+            Log.i("UserAdapter", String.valueOf(usersModel.isOnline()));
+
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -61,9 +79,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-
         private TextView firstName, lastName;
-        private ImageView profilePic;
+        private ImageView profilePic, onlineStatus, offlineStatus;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -71,6 +88,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             firstName = itemView.findViewById(R.id.firstName);
             lastName = itemView.findViewById(R.id.lastName);
             profilePic = itemView.findViewById(R.id.profilePic);
+            onlineStatus = itemView.findViewById(R.id.onlineStatus);
+            offlineStatus = itemView.findViewById(R.id.offlineStatus);
         }
     }
 

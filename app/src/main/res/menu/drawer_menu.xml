@@ -13,8 +13,8 @@
             android:title="My Products" />
 
         <item
-            android:id="@+id/orderParts"
-            android:title="Order Parts" />
+            android:id="@+id/market"
+            android:title="Market" />
 
         <item
             android:id="@+id/orders"

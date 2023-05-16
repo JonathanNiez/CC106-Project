@@ -2,10 +2,19 @@ package com.example.cc106project.Model;
 
 public class MyProductsModel {
 
-    String itemImage;
-    String itemPrice;
-    String itemName;
-    int itemStock;
+    private String itemImage, itemName;
+    private double itemPrice;
+    private int itemStock;
+    private int productID;
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
 
     public String getItemImage() {
         return itemImage;
@@ -15,11 +24,11 @@ public class MyProductsModel {
         this.itemImage = itemImage;
     }
 
-    public String getItemPrice() {
+    public double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(String itemPrice) {
+    public void setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
     }
 
@@ -44,11 +53,13 @@ public class MyProductsModel {
 
     }
 
-    public MyProductsModel(String itemImage, String itemPrice, String itemName, int itemStock) {
+    public MyProductsModel(String itemImage, double itemPrice, String itemName
+            , int itemStock, int productID) {
         this.itemImage = itemImage;
         this.itemPrice = itemPrice;
         this.itemName = itemName;
         this.itemStock = itemStock;
+        this.productID = productID;
     }
 
 }

@@ -2,10 +2,19 @@ package com.example.cc106project.Model;
 
 public class UsersModel {
 
-    String firstName;
-    String lastName;
-    String profilePic;
-    String userID;
+    private String firstName;
+    private String lastName;
+    private String profilePicUrl;
+    private String userID;
+    boolean isOnline;
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
 
     public String getUserID() {
         return userID;
@@ -20,8 +29,8 @@ public class UsersModel {
         return lastName;
     }
 
-    public String getProfilePic() {
-        return profilePic;
+    public String getProfilePicUrl() {
+        return profilePicUrl;
     }
 
     public void setUserID(String userID) {
@@ -39,18 +48,19 @@ public class UsersModel {
     }
 
 
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
+    public void setProfilePicUrl(String profilePic) {
+        this.profilePicUrl = profilePic;
     }
 
     public UsersModel() {
     }
 
     public UsersModel(String firstName, String lastName,
-                      String profilePic, String userID) {
+                      String profilePicUrl, String userID, boolean isOnline) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.profilePic = profilePic;
+        this.profilePicUrl = profilePicUrl;
         this.userID = userID;
+        this.isOnline = isOnline;
     }
 }

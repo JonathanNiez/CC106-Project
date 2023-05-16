@@ -8,9 +8,20 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"/>
+
+    <EditText
+        android:id="@+id/searchChatUsers"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Search Users..."
+        android:textColor="@color/black"
+        android:fontFamily="@font/sourcesanspro_light"
+        android:background="@drawable/search_box"
+        android:layout_margin="5dp"
+        android:padding="5dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewUsers"
@@ -21,7 +32,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        tools:listitem="@layout/users"/>
+        tools:listitem="@layout/users"
+        android:layout_below="@id/searchChatUsers"/>
 
 
 </RelativeLayout>

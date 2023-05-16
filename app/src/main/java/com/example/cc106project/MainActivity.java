@@ -29,7 +29,7 @@ import com.bumptech.glide.Glide;
 import com.example.cc106project.Fragments.Account;
 import com.example.cc106project.Fragments.Home;
 import com.example.cc106project.Fragments.MyProducts;
-import com.example.cc106project.Fragments.OrderParts;
+import com.example.cc106project.Fragments.Market;
 import com.example.cc106project.Fragments.Orders;
 import com.example.cc106project.Fragments.Settings;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -46,21 +46,21 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import com.example.cc106project.Fragments.About;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView navFirstname, navLastname, navEmail;
     private ImageView navProfilePic;
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    View navHeader;
-    Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private View navHeader;
+    private Toolbar toolbar;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
-    private GoogleSignInOptions googleSignInOptions;
-    private GoogleSignInClient googleSignInClient;
-    private GoogleSignInAccount googleSignInAccount;
-    FirebaseFirestore fStore;
-    String userID;
+    private FirebaseFirestore fStore;
+    private DocumentReference documentReference;
+    private String userID;
 
     @Override
     public void onBackPressed() {
@@ -97,11 +97,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("MainActivity", "onResume");
+        setStatus(true);
+
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         Log.i("MainActivity", "onPause");
-
+        setStatus(false);
     }
+
 
     private void internetConnectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -131,16 +140,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Log.i("MainActivity", "onCreate");
 
-        //Firebase Email
-//        user = auth.getCurrentUser();
-
-
-        //Firebase Google sign in
-//        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestEmail().build();
-//        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -153,10 +152,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navEmail = navHeader.findViewById(R.id.navEmail);
         navProfilePic = navHeader.findViewById(R.id.navProfilePic);
 
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        fStore = FirebaseFirestore.getInstance();
+
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+    }
+
+    private void setStatus(boolean isOnline){
+        documentReference = fStore.collection("users").document(currentUser.getUid());
+
+        HashMap<String, Object> status = new HashMap<>();
+        status.put("isOnline", isOnline);
+        documentReference.update(status);
     }
 
     private boolean isConnectedToTheInternet(MainActivity mainActivity) {
@@ -174,61 +185,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void checkIfEmailSignedIn() {
-        if (currentUser == null) {
-            FirebaseAuth.getInstance().signOut();
-            Log.i("MainActivity", "Token Cleared by Email Sign in");
-
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-            finish();
-        } else {
-            //displays Home as default landing page
-            toolbar.setTitle("Home");
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
-                    new Home()).commit();
-
-            // Fetches the data of the user's firstname and lastname
-            userID = auth.getCurrentUser().getUid();
-
-            DocumentReference documentReference = fStore.collection("users").document(userID);
-            documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                    if (value != null) {
-                        navFirstname.setText(value.getString("firstName"));
-                        navLastname.setText(value.getString("lastName"));
-                        navEmail.setText(currentUser.getEmail());
-                    } else {
-                        FirebaseAuth.getInstance().signOut();
-
-                    }
-
-                }
-            });
-        }
-    }
-
-    private void checkIfGoogleSignedIn() {
-        if (googleSignInAccount == null) {
-
-            Log.i("MainActivity", "Google Token Cleared by Google sign in");
-
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-            finish();
-
-
-        } else {
-            Log.i("MainActivity", "Displaying Account Info");
-
-            FirebaseUser currentUser = auth.getCurrentUser();
-
-
-        }
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -237,10 +193,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                         new Home()).commit();
                 break;
-            case R.id.orderParts:
-                toolbar.setTitle("Order Parts");
+            case R.id.market:
+                toolbar.setTitle("Market");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
-                        new OrderParts()).commit();
+                        new Market()).commit();
                 break;
             case R.id.myProducts:
                 toolbar.setTitle("My Products");
@@ -264,9 +220,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.messaging:
                 toolbar.setTitle("Messaging");
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
-//                        new Messaging()).commit();
-
                 Intent toChatActivity = new Intent(MainActivity.this, MessageActivity.class);
                 startActivity(toChatActivity);
                 break;
@@ -316,16 +269,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void displayUserInfo() {
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-        fStore = FirebaseFirestore.getInstance();
 
         if (currentUser != null) {
 
             Log.i("MainActivity", "User is Logged-in");
 
             userID = currentUser.getUid();
-//            googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
             toolbar.setTitle("Home");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
@@ -333,15 +282,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             Log.i("MainActivity", "User: " + currentUser);
 
-            DocumentReference documentReference = fStore.collection("users").document(userID);
+            documentReference = fStore.collection("users").document(userID);
             documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
                     if (value != null) {
-                        String getEmail = (value.getString("email"));
-                        String getFirstName = (value.getString("firstName"));
-                        String getLastName = (value.getString("lastName"));
+                        String getEmail = value.getString("email");
+                        String getFirstName = value.getString("firstName");
+                        String getLastName = value.getString("lastName");
                         String getProfilePic = value.getString("profilePicUrl");
 
                         Log.i("MainActivity", "User Full Name: " + getFirstName + "" + getLastName);
@@ -365,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                     } else {
-                        Log.e("Account", error.getMessage());
+                        Log.e("MainActivity", error.getMessage());
                     }
 
                 }

@@ -55,18 +55,20 @@ import java.util.Objects;
 public class Account extends Fragment {
 
     private TextView firstName, lastName, email, address;
-    private ImageView profilePicture;
-    private ImageButton editAddress, editProfilePicBtn, clearProfilePicBtn;
+    private ImageView profilePicture, coverPhoto;
+    private ImageButton editAddress, editProfilePicBtn, clearProfilePicBtn, editCoverPhotoBtn, clearCoverPhotoBtn;
     private EditText streetAddress, province, city, postalCode;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private FirebaseFirestore fStore;
     private FirebaseUser currentUser;
-    private GoogleSignInOptions googleSignInOptions;
-    private GoogleSignInClient googleSignInClient;
-    private GoogleSignInAccount googleSignInAccount;
+    private StorageReference storageRef;
+    private StorageReference imagesRef;
+    private StorageReference fileRef;
     private String userID;
-    private int REQUEST_CODE = 69;
+    private int REQUEST_CODE_FOR_PROFILE_PIC = 69;
+    private int REQUEST_CODE_FOR_COVER_PIC = 420;
+    private Intent intent;
     private Uri imageUri;
     private String TAG = "Account";
 
@@ -84,125 +86,27 @@ public class Account extends Fragment {
         Log.i(TAG, "onStop");
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate");
-
-
-//        auth = FirebaseAuth.getInstance();
-//        currentUser = auth.getCurrentUser();
-
-        //Firebase Google sign in
-//        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestEmail().build();
-//        googleSignInClient = GoogleSignIn.getClient(getContext(), googleSignInOptions);
-//        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
-
-    }
-
-
-    private void checkIfGoogleSignedIn() {
-        if (googleSignInAccount != null) {
-            Log.i("Account", "Displaying Google Account Info");
-            String getEmail = googleSignInAccount.getEmail();
-            String getFirstName = googleSignInAccount.getGivenName();
-            String getLastName = googleSignInAccount.getFamilyName();
-
-            Log.i("Account", "Email: " + getEmail);
-            Log.i("Account", "FullName: " + getFirstName + " " + getLastName);
-
-            Glide.with(getContext()).load(googleSignInAccount.getPhotoUrl())
-                    .centerCrop().into(profilePicture);
-
-            firstName.setText(getFirstName);
-            lastName.setText(getLastName);
-            email.setText(getEmail);
-        }
-
-    }
-
-    private void checkIfEmailSignedIn() {
-        if (currentUser != null) {
-            Log.i("Account", "Displaying Account Info");
-
-//            userID = auth.getCurrentUser().getUid();
-
-//            DocumentReference documentReference = fStore.collection("users").document(userID);
-//            documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
-//                @Override
-//                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-//
-//                    if (value != null) {
-//                        firstName.setText(value.getString("firstName"));
-//                        lastName.setText(value.getString("lastName"));
-//                        email.setText(value.getString(currentUser.getEmail()));
-//                        address.setText(value.getString("address"));
-//
-//                        Log.i("Account", currentUser.getEmail());
-//                    } else {
-//                        FirebaseAuth.getInstance().signOut();
-//                    }
-//                }
-//            });
-        }
-    }
-
-    public void displayUserInfo() {
-
-
-        if (currentUser != null) {
-            userID = currentUser.getUid();
-
-            Log.i(TAG, "User: " + currentUser);
-
-            DocumentReference documentReference = fStore.collection("users").document(userID);
-            documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                    progressBar.setVisibility(View.GONE);
-
-                    if (value != null) {
-                        String getProfilePic = value.getString("profilePicUrl");
-
-                        firstName.setText(value.getString("firstName"));
-                        lastName.setText(value.getString("lastName"));
-                        email.setText(value.getString("email"));
-                        address.setText(value.getString("address"));
-
-                        if (getProfilePic != null) {
-                            Glide.with(getContext()).load(getProfilePic)
-                                    .centerCrop().into(profilePicture);
-                            Log.i("Account", "Displaying Profile Picture");
-                            clearProfilePicBtn.setVisibility(View.VISIBLE);
-
-                        }
-
-                    } else {
-                        Log.e("Account", error.getMessage());
-                        clearProfilePicBtn.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
-
-                    }
-
-                }
-            });
-
-        } else {
-            Intent intent = new Intent(getContext(), Login.class);
-            startActivity(intent);
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && data != null && data.getData() != null) {
+        Log.i(TAG, "onActivityResult");
+
+        userID = currentUser.getUid();
+
+        if (requestCode == REQUEST_CODE_FOR_PROFILE_PIC && data != null && data.getData() != null) {
             imageUri = data.getData();
 
-            userID = currentUser.getUid();
+            Log.i(TAG, "REQUEST_CODE_FOR_PROFILE_PIC");
+
             uploadImageToFirebaseStorage(imageUri, userID);
+        }
+        if (requestCode == REQUEST_CODE_FOR_COVER_PIC && data != null && data.getData() != null) {
+            imageUri = data.getData();
+
+            Log.i(TAG, "REQUEST_CODE_FOR_COVER_PIC");
+
+            uploadCoverPhotoToFirebaseStorage(imageUri, userID);
         }
     }
 
@@ -210,6 +114,8 @@ public class Account extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
@@ -221,9 +127,12 @@ public class Account extends Fragment {
         email = view.findViewById(R.id.email);
         address = view.findViewById(R.id.address);
         profilePicture = view.findViewById(R.id.profilePic);
+        coverPhoto = view.findViewById(R.id.coverPhoto);
         editAddress = view.findViewById(R.id.editAddress);
         editProfilePicBtn = view.findViewById(R.id.editProfilePicBtn);
         clearProfilePicBtn = view.findViewById(R.id.clearProfilePicBtn);
+        editCoverPhotoBtn = view.findViewById(R.id.editCoverPhotoBtn);
+        clearCoverPhotoBtn = view.findViewById(R.id.clearCoverPhotoBtn);
 
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -231,15 +140,18 @@ public class Account extends Fragment {
 
         displayUserInfo();
 
+        storageRef = FirebaseStorage.getInstance().getReference();
+        imagesRef = storageRef.child("images");
+
         editAddress.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_address, null);
 
-//            EditText emailForgotPassword = dialogView.findViewById(R.id.emailForgotPassword);
             streetAddress = dialogView.findViewById(R.id.streetAddress);
             province = dialogView.findViewById(R.id.province);
             city = dialogView.findViewById(R.id.city);
             postalCode = dialogView.findViewById(R.id.postalCode);
+            clearProfilePicBtn.setVisibility(View.GONE);
 
             builder.setView(dialogView);
             AlertDialog alertDialog = builder.create();
@@ -339,17 +251,77 @@ public class Account extends Fragment {
         });
 
         editProfilePicBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, REQUEST_CODE);
+            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, REQUEST_CODE_FOR_PROFILE_PIC);
+        });
+
+        editCoverPhotoBtn.setOnClickListener(v -> {
+            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, REQUEST_CODE_FOR_COVER_PIC);
+
         });
 
         return view;
     }
 
+    public void displayUserInfo() {
+
+        if (currentUser != null) {
+            userID = currentUser.getUid();
+
+            Log.i(TAG, "User: " + currentUser);
+
+            DocumentReference documentReference = fStore.collection("users").document(userID);
+            documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    progressBar.setVisibility(View.GONE);
+
+                    if (value != null) {
+                        String getProfilePic = value.getString("profilePicUrl");
+                        String getCoverPhoto = value.getString("coverPicUrl");
+
+                        firstName.setText(value.getString("firstName"));
+                        lastName.setText(value.getString("lastName"));
+                        email.setText(value.getString("email"));
+                        address.setText(value.getString("address"));
+
+
+                        //TODO: nalibug ko sa conditioning
+                        if (getProfilePic != null && getCoverPhoto == null) {
+                            Glide.with(getContext()).load(getProfilePic)
+                                    .centerCrop().into(profilePicture);
+
+                            Log.i(TAG, "Displaying Profile Picture");
+                            clearProfilePicBtn.setVisibility(View.VISIBLE);
+                        } else if (getCoverPhoto != null) {
+                            Glide.with(getContext()).load(getCoverPhoto)
+                                    .centerCrop().into(coverPhoto);
+                            clearCoverPhotoBtn.setVisibility(View.VISIBLE);
+                            Log.i(TAG, "Displaying Cover Picture");
+
+                        }
+
+
+                    } else {
+                        Log.e(TAG, error.getMessage());
+                        clearProfilePicBtn.setVisibility(View.GONE);
+                        clearCoverPhotoBtn.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+
+                    }
+
+                }
+            });
+
+        } else {
+            Intent intent = new Intent(getContext(), Login.class);
+            startActivity(intent);
+        }
+    }
+
     private void uploadImageToFirebaseStorage(Uri imageUri, String xUserID) {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imagesRef = storageRef.child("images");
-        StorageReference fileRef = imagesRef.child(imageUri.getLastPathSegment());
+        fileRef = imagesRef.child(imageUri.getLastPathSegment());
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -384,6 +356,44 @@ public class Account extends Fragment {
                 Log.e(TAG, e.getMessage());
             }
         });
+    }
+
+    private void uploadCoverPhotoToFirebaseStorage(Uri imageUri, String xUserID) {
+        fileRef = imagesRef.child(imageUri.getLastPathSegment());
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Get the download URL of the uploaded image
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        // Save the download URL in Firestore
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("coverPicUrl", uri.toString());
+                        fStore.collection("users").document(String.valueOf(xUserID)).update(data);
+                        coverPhoto.setImageURI(imageUri);
+
+//                        Toast.makeText(getContext(), "Profile Picture Changed Successfully", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Cover Picture Changed Successfully");
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Cover Picture Failed to Upload", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Cover Picture Failed to Upload");
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Profile Picture Failed to Upload", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, e.getMessage());
+            }
+        });
+
     }
 
 }

@@ -10,6 +10,16 @@
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">4ca8d1036a34072676ce3684a5b6e562</string>
 
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="item_category">
+        <item>Monitor</item>
+        <item>CPU</item>
+        <item>GPU</item>
+        <item>RAM</item>
+        <item>Storage Devices</item>
+        <item>Power Supply</item>
+        <item>Motherboard</item>
+        <item>Accessories</item>
+    </string-array>
 </resources>

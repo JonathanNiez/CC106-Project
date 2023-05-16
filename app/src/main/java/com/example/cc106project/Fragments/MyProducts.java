@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +22,7 @@ import com.example.cc106project.Adapter.MyProductsAdapter;
 import com.example.cc106project.Login;
 import com.example.cc106project.Model.MyProductsModel;
 import com.example.cc106project.R;
+import com.example.cc106project.Sell;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,64 +39,46 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MyProducts#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MyProducts extends Fragment {
 
     private TextView firstName, lastName, productsSold;
     private ImageView profilePicture;
-    FirebaseAuth auth;
-    FirebaseFirestore fStore;
-    FirebaseUser currentUser;
-    GoogleSignInOptions googleSignInOptions;
-    GoogleSignInClient googleSignInClient;
-    GoogleSignInAccount googleSignInAccount;
-    String userID;
+    private ProgressBar progressBar;
+    private Button sellBtn;
+    private FirebaseAuth auth;
+    private FirebaseFirestore fStore;
+    private FirebaseUser currentUser;
+    private String userID;
+    private String TAG = "MyProducts";
     private RecyclerView recyclerView;
-    ArrayList<MyProductsModel> myProductsModelArrayList = new ArrayList<>();
+    private ArrayList<MyProductsModel> myProductsModelArrayList;
     private MyProductsAdapter myProductsAdapter;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public MyProducts() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyProducts.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyProducts newInstance(String param1, String param2) {
-        MyProducts fragment = new MyProducts();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart");
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause");
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop");
     }
 
     @Override
@@ -101,12 +86,21 @@ public class MyProducts extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_products, container, false);
-
+        Log.i(TAG, "onCreateView");
 
         firstName = view.findViewById(R.id.firstName);
         lastName = view.findViewById(R.id.lastName);
         productsSold = view.findViewById(R.id.productSold);
         profilePicture = view.findViewById(R.id.profilePicture);
+        sellBtn = view.findViewById(R.id.sellBtn);
+
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        sellBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), Sell.class);
+            startActivity(intent);
+        });
 
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -116,10 +110,6 @@ public class MyProducts extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        myProductsAdapter = new MyProductsAdapter(getContext(), myProductsModelArrayList);
-        recyclerView.setAdapter(myProductsAdapter);
-
-
         displayUserInfo();
         loadMyProducts();
 
@@ -128,6 +118,8 @@ public class MyProducts extends Fragment {
 
     private void loadMyProducts() {
 
+        myProductsModelArrayList  = new ArrayList<>();
+
         userID = currentUser.getUid();
 
         CollectionReference collectionReference = fStore.collection("products");
@@ -135,6 +127,8 @@ public class MyProducts extends Fragment {
         Query query = collectionReference.whereEqualTo("sellerID", userID);
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                progressBar.setVisibility(View.GONE);
+
                 for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                     MyProductsModel myProductsModel = queryDocumentSnapshot.toObject(MyProductsModel.class);
                     myProductsModelArrayList.add(myProductsModel);
@@ -144,6 +138,7 @@ public class MyProducts extends Fragment {
                 Log.i("MyProducts", "Retrieving and Displaying Products");
 
             } else {
+                progressBar.setVisibility(View.GONE);
                 Log.e("MyProducts", "Products Failed to Load");
 
             }
@@ -166,12 +161,16 @@ public class MyProducts extends Fragment {
                     if (value != null) {
                         String getProfilePic = value.getString("profilePicUrl");
 
+                        //TODO: java.lang.NullPointerException: You cannot start a load on a not yet attached View or
+                        // a Fragment where getActivity() returns null (which usually occurs when getActivity() is
+                        // called before the Fragment is attached or after the Fragment is destroyed).
+
                         firstName.setText(value.getString("firstName"));
                         lastName.setText(value.getString("lastName"));
                         productsSold.setText("Products Sold: " + value.getLong("productsSold"));
 
                         if (getProfilePic != null) {
-                            Glide.with(getActivity()).load(getProfilePic)
+                            Glide.with(getContext()).load(getProfilePic)
                                     .centerCrop().into(profilePicture);
                         } else {
                             profilePicture.setImageResource(R.drawable.user_icon100);

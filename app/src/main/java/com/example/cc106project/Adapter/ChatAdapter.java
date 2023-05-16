@@ -52,13 +52,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatAdapterVie
     public void onBindViewHolder(@NonNull ChatAdapter.ChatAdapterViewHolder holder, int position) {
         ChatModel chatModel = chatModelArrayList.get(position);
         holder.chatUserMessage.setText(chatModel.getMessage());
+        if (position == chatModelArrayList.size()-1){
+            Log.i("ChatAdapter", String.valueOf(chatModel.isSeen()));
+
+            //TODO: perme false
+            if(chatModel.isSeen()){
+                holder.seen.setText("Seen");
+            }else {
+                holder.seen.setText("Delivered");
+            }
+        }else {
+            holder.seen.setVisibility(View.GONE);
+        }
 
       if (imageURL != null){
-          Log.i("ChatAdapter", "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" + imageURL);
-
-//          Glide.with(context).load(imageURL).centerCrop().into(holder.chatUserProfilePic);
+          Glide.with(context).load(imageURL).centerCrop().into(holder.chatUserProfilePic);
       }else{
-          Log.i("ChatAdapter", "profilepis iisssssss asdasda null");
           holder.chatUserProfilePic.setImageResource(R.drawable.user_icon100);
       }
 
@@ -66,19 +75,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatAdapterVie
 
     @Override
     public int getItemCount() {
-        return chatModelArrayList.size();
+        return chatModelArrayList == null ? 0 : chatModelArrayList.size();
+//        return chatModelArrayList.size();
     }
 
     public static class ChatAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView chatUserMessage;
-        private ImageView chatUserProfilePic;
+        private TextView chatUserMessage, seen, chatProductName, chatProductPrice;
+        private ImageView chatUserProfilePic, chatProductImage;
+
 
         public ChatAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
             chatUserMessage = itemView.findViewById(R.id.chatUserMessage);
             chatUserProfilePic = itemView.findViewById(R.id.chatUserProfilePic);
+            seen = itemView.findViewById(R.id.seen);
+//            chatProductName = itemView.findViewById(R.id.chatProductName);
+//            chatProductPrice = itemView.findViewById(R.id.chatProductPrice);
+//            chatProductImage = itemView.findViewById(R.id.chatProductImage);
+
         }
     }
 

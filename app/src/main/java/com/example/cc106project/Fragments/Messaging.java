@@ -33,8 +33,8 @@ public class Messaging extends Fragment {
     private UserAdapter userAdapter;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
-    FirebaseFirestore fStore;
-    String userID;
+    private FirebaseFirestore fStore;
+    private String userID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,8 +45,6 @@ public class Messaging extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-//        userAdapter = new UserAdapter(getContext(), usersList);
-//        recyclerView.setAdapter(userAdapter);
         usersModelList = new ArrayList<>();
 
         auth = FirebaseAuth.getInstance();
@@ -64,7 +62,7 @@ public class Messaging extends Fragment {
                         usersModelList.add(usersModel);
                     }
                 }
-                userAdapter = new UserAdapter(getContext(), usersModelList);
+                userAdapter = new UserAdapter(getContext(), usersModelList, false);
                 recyclerView.setAdapter(userAdapter);
 
 
@@ -76,54 +74,5 @@ public class Messaging extends Fragment {
             }
         });
         return view;
-    }
-
-    private void loadUsers() {
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-        fStore = FirebaseFirestore.getInstance();
-
-        fStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    UsersModel usersModel = documentSnapshot.toObject(UsersModel.class);
-                    usersModelList.add(usersModel);
-
-
-                }
-                userAdapter.notifyDataSetChanged();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("Messaging", e.getMessage());
-            }
-        });
-
-//        fStore.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                if (error != null) {
-//
-//                    Log.e("Messaging", error.getMessage());
-//                    return;
-//                }
-//
-//
-//                for (DocumentChange documentChange : value.getDocumentChanges()) {
-//                    if (documentChange.getType() == DocumentChange.Type.ADDED ||
-//                            documentChange.getType() == DocumentChange.Type.MODIFIED ||
-//                            documentChange.getType() == DocumentChange.Type.REMOVED) {
-//                        usersList.add(documentChange.getDocument().toObject(Users.class));
-//                    }
-//
-//                    userAdapter = new UserAdapter(getContext(), usersList);
-//                    recyclerView.setAdapter(userAdapter);
-//                    userAdapter.notifyDataSetChanged();
-//                }
-//            }
-//        });
-
     }
 }

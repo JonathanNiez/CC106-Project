@@ -64,6 +64,7 @@ public class Login extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "GOOGLE_AUTH";
 
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -118,8 +119,6 @@ public class Login extends AppCompatActivity {
         googleBtn = findViewById(R.id.googleBtn);
         phoneNumberBtn = findViewById(R.id.phoneNumberBtn);
         progressBar = findViewById(R.id.progressBar);
-
-//        isUserCurrentlyLoggedIn();
 
         textViewRegister.setOnClickListener(v -> {
             Intent intent = new Intent(Login.this, Register.class);
@@ -343,6 +342,8 @@ public class Login extends AppCompatActivity {
                                     user.put("profilePicUrl", profilePic);
                                     user.put("productsSold", 0);
                                     user.put("userID", userId);
+                                    user.put("coverPicUrl", null);
+                                    user.put("isOnline", true);
                                     fStore.collection("users").document(userId).set(user);
 
                                     Log.d("Login" + " " + TAG, "signInWithCredential:success");
@@ -359,9 +360,9 @@ public class Login extends AppCompatActivity {
         } else {
             Log.d(TAG, "signInWithCredential:failed");
 
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+//            Intent intent = new Intent(Login.this, MainActivity.class);
+//            startActivity(intent);
+//            finish();
 
         }
     }
