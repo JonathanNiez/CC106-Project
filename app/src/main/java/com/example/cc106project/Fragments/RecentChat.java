@@ -72,25 +72,22 @@ public class RecentChat extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 stringUsersList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                    ChatModel chatModel = dataSnapshot.getValue(ChatModel.class);
-//
-//                    assert chatModel != null;
-//                    if (chatModel.getSender().equals(currentUser.getUid())) {
-//                        stringUsersList.add(chatModel.getReceiver());
-//
-//                        Log.i(TAG, "User List: " + stringUsersList);
-//
-//                    }
-//                    if (chatModel.getReceiver().equals(currentUser.getUid())) {
-//                        stringUsersList.add(chatModel.getSender());
-//
-//                        Log.i(TAG, "User List: " + stringUsersList);
-//
-//                    }
-                }
+                    ChatModel chatModel = dataSnapshot.getValue(ChatModel.class);
 
-//                userAdapter = new UserAdapter(getContext(), usersArrayList);
-//                recyclerView.setAdapter(userAdapter);
+                    assert chatModel != null;
+                    if (chatModel.getSender().equals(currentUser.getUid())) {
+                        stringUsersList.add(chatModel.getReceiver());
+
+                        Log.i(TAG, "User List: " + stringUsersList);
+
+                    }
+                    if (chatModel.getReceiver().equals(currentUser.getUid())) {
+                        stringUsersList.add(chatModel.getSender());
+
+                        Log.i(TAG, "User List: " + stringUsersList);
+
+                    }
+                }
 
                 Log.i(TAG, "Reading Message");
 
@@ -108,7 +105,6 @@ public class RecentChat extends Fragment {
 
     private void readChats() {
         usersModelArrayList = new ArrayList<>();
-
         fStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -124,7 +120,7 @@ public class RecentChat extends Fragment {
                             if (usersModelArrayList.size() != 0) {
                                 for (UsersModel usersModel1 : usersModelArrayList) {
                                     if (!currentUser.getUid().equals(usersModel1.getUserID())) {
-                                        usersModelArrayList.add(usersModel);
+                                        usersModelArrayList.add(usersModel1);
                                     }
                                 }
                             } else {
@@ -133,6 +129,7 @@ public class RecentChat extends Fragment {
                         }
                     }
                     Log.i(TAG, "Displaying Recent Chat");
+
                 }
                 userAdapter = new UserAdapter(getContext(), usersModelArrayList, false);
                 recyclerView.setAdapter(userAdapter);

@@ -6,7 +6,7 @@ public class UsersModel {
     private String lastName;
     private String profilePicUrl;
     private String userID;
-    boolean isOnline;
+    private boolean isOnline;
 
     public boolean isOnline() {
         return isOnline;

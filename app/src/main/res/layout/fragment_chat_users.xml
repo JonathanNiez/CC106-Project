@@ -12,6 +12,16 @@
         android:layout_height="100dp"
         android:layout_centerInParent="true"/>
 
+    <TextView
+        android:id="@+id/noResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Results"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/sourcesanspro_black"
+        android:textSize="10pt"/>
+
     <EditText
         android:id="@+id/searchChatUsers"
         android:layout_width="match_parent"

@@ -6,7 +6,16 @@ public class Products {
     private String sellerID;
     private String itemCategory;
     private double itemPrice;
+    private boolean isSold;
     private int productID;
+
+    public boolean isSold() {
+        return isSold;
+    }
+
+    public void setSold(boolean sold) {
+        isSold = sold;
+    }
 
     public String getItemCategory() {
         return itemCategory;
@@ -61,12 +70,14 @@ public class Products {
     public Products() {
     }
 
-    public Products(String itemName, String itemImage, double itemPrice, String sellerID, int productID, String itemCategory) {
+    public Products(String itemName, String itemImage, double itemPrice, String sellerID
+            , int productID, String itemCategory, boolean isSold) {
         this.itemName = itemName;
         this.itemImage = itemImage;
         this.itemPrice = itemPrice;
         this.sellerID = sellerID;
         this.productID = productID;
         this.itemCategory = itemCategory;
+        this.isSold = isSold;
     }
 }

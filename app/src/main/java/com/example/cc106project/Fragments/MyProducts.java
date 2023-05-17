@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.cc106project.Adapter.MyProductsAdapter;
 import com.example.cc106project.Login;
 import com.example.cc106project.Model.MyProductsModel;
@@ -40,7 +41,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 
 public class MyProducts extends Fragment {
-
     private TextView firstName, lastName, productsSold;
     private ImageView profilePicture;
     private ProgressBar progressBar;
@@ -53,7 +53,7 @@ public class MyProducts extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<MyProductsModel> myProductsModelArrayList;
     private MyProductsAdapter myProductsAdapter;
-
+    private RequestManager requestManager;
 
     @Override
     public void onStart() {
@@ -82,6 +82,16 @@ public class MyProducts extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG, "onDestroyView");
+
+        if (requestManager != null){
+            requestManager.clear(profilePicture);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -96,6 +106,8 @@ public class MyProducts extends Fragment {
 
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+
+        requestManager = Glide.with(this);
 
         sellBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), Sell.class);
@@ -118,7 +130,7 @@ public class MyProducts extends Fragment {
 
     private void loadMyProducts() {
 
-        myProductsModelArrayList  = new ArrayList<>();
+        myProductsModelArrayList = new ArrayList<>();
 
         userID = currentUser.getUid();
 
@@ -152,41 +164,40 @@ public class MyProducts extends Fragment {
             userID = currentUser.getUid();
 
             Log.i("MyProducts", "User: " + currentUser);
+            if (getActivity() != null) {
+                DocumentReference documentReference = fStore.collection("users").document(userID);
+                documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-            DocumentReference documentReference = fStore.collection("users").document(userID);
-            documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (value != null) {
+                            String getProfilePic = value.getString("profilePicUrl");
 
-                    if (value != null) {
-                        String getProfilePic = value.getString("profilePicUrl");
+                            firstName.setText(value.getString("firstName"));
+                            lastName.setText(value.getString("lastName"));
+                            productsSold.setText("Products Sold: " + value.getLong("productsSold"));
 
-                        //TODO: java.lang.NullPointerException: You cannot start a load on a not yet attached View or
-                        // a Fragment where getActivity() returns null (which usually occurs when getActivity() is
-                        // called before the Fragment is attached or after the Fragment is destroyed).
+                            if (getProfilePic != null) {
+                                requestManager.load(getProfilePic)
+                                        .centerCrop().into(profilePicture);
+                            } else {
+                                profilePicture.setImageResource(R.drawable.user_icon100);
+                            }
 
-                        firstName.setText(value.getString("firstName"));
-                        lastName.setText(value.getString("lastName"));
-                        productsSold.setText("Products Sold: " + value.getLong("productsSold"));
-
-                        if (getProfilePic != null) {
-                            Glide.with(getContext()).load(getProfilePic)
-                                    .centerCrop().into(profilePicture);
                         } else {
-                            profilePicture.setImageResource(R.drawable.user_icon100);
+                            Log.e("MyProducts", error.getMessage());
                         }
 
-                    } else {
-                        Log.e("MyProducts", error.getMessage());
                     }
+                });
 
-                }
-            });
-
-        } else {
-            Intent intent = new Intent(getContext(), Login.class);
-            startActivity(intent);
+            } else {
+                Intent intent = new Intent(getContext(), Login.class);
+                startActivity(intent);
+            }
         }
+
+
     }
 
 }

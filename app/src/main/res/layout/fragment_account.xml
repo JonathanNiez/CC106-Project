@@ -156,20 +156,20 @@
 
             <TextView
                 android:id="@+id/email"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginLeft="10dp"
+                android:layout_margin="10dp"
                 android:drawableStart="@drawable/mail24"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Email"
                 android:textColor="@color/black"
                 android:textSize="9pt" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_margin="5dp"
                >
 
                 <TextView
@@ -177,22 +177,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp"
                     android:drawableStart="@drawable/address24"
                     android:fontFamily="@font/poppins_medium"
                     android:text="Address"
                     android:textColor="@color/black"
-                    android:textSize="9pt" />
+                    android:textSize="9pt"
+                    android:layout_toRightOf="@id/editAddress"
+                    />
 
                 <ImageButton
                     android:id="@+id/editAddress"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/edit_25" />
+                    android:src="@drawable/edit_25"
+                    android:layout_marginLeft="5dp"
+                    />
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
         </LinearLayout>

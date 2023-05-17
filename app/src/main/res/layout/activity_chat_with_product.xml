@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_gray"
-    tools:context=".Chat">
+    tools:context=".ChatWithProduct">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chatToolBar"
@@ -81,13 +81,95 @@
         android:layout_centerInParent="true"
         />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/chatProductWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/product_box"
+        android:elevation="7dp"
+        android:layout_below="@id/chatToolBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/light_gray">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start">
+
+                    <ImageView
+                        android:id="@+id/chatProductImage"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/image" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/chatProductName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Product Name"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/chatProductCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Product Category"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/chatProductPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/peso_sign"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/chatProductStock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Product Stock"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
+        android:id="@+id/chatWithProductRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:layout_above="@id/messageInputWrapper"
-        android:layout_below="@id/chatToolBar"
+        android:layout_below="@id/chatProductWrapper"
         tools:listitem="@layout/chat_item_right"/>
 
 

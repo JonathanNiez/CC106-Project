@@ -47,9 +47,7 @@ public class Register extends AppCompatActivity {
     private GoogleSignInOptions googleSignInOptions;
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInAccount googleSignInAccount;
-
-    String userID;
-
+    private String userID;
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "GOOGLE_AUTH";
 
@@ -227,7 +225,7 @@ public class Register extends AppCompatActivity {
                                 Log.d("Register" + " " + TAG, "signInWithCredential:success");
                                 FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                                if (currentUser != null){
+                                if (currentUser != null) {
                                     String userId = currentUser.getUid();
                                     String email = account.getEmail();
                                     String name = account.getDisplayName();

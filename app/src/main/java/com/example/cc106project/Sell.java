@@ -41,7 +41,7 @@ import java.util.Random;
 public class Sell extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Button cancelBtn, sellBtn, uploadImageBtn;
-    private Toolbar toolbar;
+    private Toolbar sellToolbar;
     private ImageButton itemImage;
     private EditText itemName, itemPrice, itemStock;
     private FirebaseAuth mAuth;
@@ -53,7 +53,6 @@ public class Sell extends AppCompatActivity implements AdapterView.OnItemSelecte
     private String TAG = "Sell";
     private int REQUEST_CODE = 69;
     private Uri imageUri;
-
 
     @Override
     protected void onStart() {
@@ -96,6 +95,11 @@ public class Sell extends AppCompatActivity implements AdapterView.OnItemSelecte
         itemName = findViewById(R.id.itemName);
         itemPrice = findViewById(R.id.itemPrice);
         itemStock = findViewById(R.id.itemStock);
+
+        sellToolbar = findViewById(R.id.sellToolbar);
+        sellToolbar.setNavigationOnClickListener(v -> {
+            finish();
+        });
 
         itemCategorySpinner = findViewById(R.id.itemCategorySpinner);
         ArrayAdapter<CharSequence> arrayAdapter =
@@ -144,6 +148,7 @@ public class Sell extends AppCompatActivity implements AdapterView.OnItemSelecte
                     product.put("itemStock", intItemStock);
                     product.put("itemCategory", ItemCategoryModel.itemCategory);
                     product.put("isSold", false);
+                    product.put("soldDate", null);
 
                     uploadImageToFirebaseStorage(imageUri, productID);
 
@@ -161,6 +166,7 @@ public class Sell extends AppCompatActivity implements AdapterView.OnItemSelecte
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            ItemCategoryModel.itemCategory = null;
 
                             Toast.makeText(Sell.this, "Product Failed to Add", Toast.LENGTH_SHORT).show();
                             Log.e(TAG, e.getMessage());

@@ -1,7 +1,5 @@
 package com.example.cc106project.Fragments;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -12,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,16 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.cc106project.Login;
 import com.example.cc106project.R;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,7 +42,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Account extends Fragment {
 
@@ -71,6 +62,8 @@ public class Account extends Fragment {
     private Intent intent;
     private Uri imageUri;
     private String TAG = "Account";
+    private RequestManager requestManager;
+    private AlertDialog.Builder alert;
 
     @Override
     public void onStart() {
@@ -86,6 +79,17 @@ public class Account extends Fragment {
         Log.i(TAG, "onStop");
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG, "onDestroyView");
+
+        if (requestManager != null) {
+            requestManager.clear(profilePicture);
+            requestManager.clear(coverPhoto);
+        }
+
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,6 +123,8 @@ public class Account extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
+        requestManager = Glide.with(this);
+
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -133,6 +139,8 @@ public class Account extends Fragment {
         clearProfilePicBtn = view.findViewById(R.id.clearProfilePicBtn);
         editCoverPhotoBtn = view.findViewById(R.id.editCoverPhotoBtn);
         clearCoverPhotoBtn = view.findViewById(R.id.clearCoverPhotoBtn);
+
+        editAddress.setVisibility(View.VISIBLE);
 
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -216,7 +224,7 @@ public class Account extends Fragment {
         });
 
         clearProfilePicBtn.setOnClickListener(v -> {
-            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert = new AlertDialog.Builder(getContext());
             alert.setTitle("Account");
             alert.setMessage("Remove Profile Picture?");
             alert.setCancelable(true);
@@ -233,6 +241,41 @@ public class Account extends Fragment {
                         public void onSuccess(Void unused) {
 
                             Log.i(TAG, "Profile Picture Removed Successfully");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, e.getMessage());
+                            dialog.cancel();
+                        }
+                    });
+
+
+                }
+            });
+            alert.setNegativeButton("No", (dialog, which) -> dialog.cancel());
+            alert.show();
+
+        });
+
+        clearCoverPhotoBtn.setOnClickListener(v -> {
+            alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Account");
+            alert.setMessage("Remove Cover Picture?");
+            alert.setCancelable(true);
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    userID = auth.getCurrentUser().getUid();
+                    DocumentReference documentReference = fStore.collection("users").document(userID);
+
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("coverPicUrl", null);
+                    documentReference.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+
+                            Toast.makeText(getContext(), "Cover Picture Removed Successfully", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -271,48 +314,56 @@ public class Account extends Fragment {
 
             Log.i(TAG, "User: " + currentUser);
 
-            DocumentReference documentReference = fStore.collection("users").document(userID);
-            documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                    progressBar.setVisibility(View.GONE);
+            if (getActivity() != null) {
+                DocumentReference documentReference = fStore.collection("users").document(userID);
+                documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        progressBar.setVisibility(View.GONE);
 
-                    if (value != null) {
-                        String getProfilePic = value.getString("profilePicUrl");
-                        String getCoverPhoto = value.getString("coverPicUrl");
+                        if (value != null) {
+                            String getProfilePic = value.getString("profilePicUrl");
+                            String getCoverPhoto = value.getString("coverPicUrl");
 
-                        firstName.setText(value.getString("firstName"));
-                        lastName.setText(value.getString("lastName"));
-                        email.setText(value.getString("email"));
-                        address.setText(value.getString("address"));
+                            firstName.setText(value.getString("firstName"));
+                            lastName.setText(value.getString("lastName"));
+                            email.setText(value.getString("email"));
+                            address.setText(value.getString("address"));
+
+                            //TODO: nalibug ko sa conditioning
+                            if (getProfilePic != null && getCoverPhoto != null) {
+                                requestManager.load(getProfilePic)
+                                        .centerCrop().into(profilePicture);
+                                requestManager.load(getCoverPhoto)
+                                        .centerCrop().into(coverPhoto);
+                                clearCoverPhotoBtn.setVisibility(View.VISIBLE);
+                                clearProfilePicBtn.setVisibility(View.VISIBLE);
+                            } else if (getCoverPhoto == null && getProfilePic == null) {
+                                profilePicture.setImageResource(R.drawable.user_icon100);
+                                coverPhoto.setImageResource(R.drawable.image);
+                            } else if (getProfilePic != null) {
+                                requestManager.load(getProfilePic)
+                                        .centerCrop().into(profilePicture);
+                                clearProfilePicBtn.setVisibility(View.VISIBLE);
+                            } else if (getCoverPhoto != null) {
+                                requestManager.load(getCoverPhoto)
+                                        .centerCrop().into(coverPhoto);
+                                clearCoverPhotoBtn.setVisibility(View.VISIBLE);
+                            }
 
 
-                        //TODO: nalibug ko sa conditioning
-                        if (getProfilePic != null && getCoverPhoto == null) {
-                            Glide.with(getContext()).load(getProfilePic)
-                                    .centerCrop().into(profilePicture);
-
-                            Log.i(TAG, "Displaying Profile Picture");
-                            clearProfilePicBtn.setVisibility(View.VISIBLE);
-                        } else if (getCoverPhoto != null) {
-                            Glide.with(getContext()).load(getCoverPhoto)
-                                    .centerCrop().into(coverPhoto);
-                            clearCoverPhotoBtn.setVisibility(View.VISIBLE);
-                            Log.i(TAG, "Displaying Cover Picture");
+                        } else {
+                            Log.e(TAG, error.getMessage());
+                            clearProfilePicBtn.setVisibility(View.GONE);
+                            clearCoverPhotoBtn.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
 
                         }
 
-
-                    } else {
-                        Log.e(TAG, error.getMessage());
-                        clearProfilePicBtn.setVisibility(View.GONE);
-                        clearCoverPhotoBtn.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
-
                     }
+                });
+            }
 
-                }
-            });
 
         } else {
             Intent intent = new Intent(getContext(), Login.class);

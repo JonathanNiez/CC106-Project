@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigationView">
+    tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/home"
-            android:title="Home" />
+            android:title="Home"
+            android:icon="@drawable/home"
+            />
         <item
             android:id="@+id/myProducts"
-            android:title="My Products" />
+            android:title="My Products"
+            android:icon="@drawable/products"/>
 
         <item
             android:id="@+id/market"
-            android:title="Market" />
-
-        <item
-            android:id="@+id/orders"
-            android:title="Orders" />
-
+            android:title="Market"
+            android:icon="@drawable/market"
+            />
 
         <item
             android:id="@+id/account"
-            android:title="Account" />
+            android:title="Account"
+            android:icon="@drawable/user_icon"/>
 
         <item
             android:id="@+id/settings"
-            android:title="Settings" />
+            android:title="Settings"
+            android:icon="@drawable/settings"
+            />
         <item
             android:id="@+id/logout"
-            android:title="Logout"/>
+            android:title="Logout"
+            android:icon="@drawable/logout"
+            />
 
     </group>
 
@@ -39,16 +44,27 @@
 
             <item
                 android:id="@+id/messaging"
-                android:title="Messaging" />
+                android:title="Messaging"
+                android:icon="@drawable/chat_black"
+                />
 
             <item
                 android:id="@+id/share"
-                android:title="Share" />
+                android:title="Share"
+                android:icon="@drawable/share"
+                />
 
             <item
                 android:id="@+id/about"
-                android:title="About" />
+                android:title="About"
+                android:icon="@drawable/about_black"
+                />
 
+            <item
+                android:id="@+id/feedback"
+                android:title="Feedback"
+                android:icon="@drawable/feedback"
+                />
 
         </menu>
     </item>

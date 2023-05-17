@@ -1,6 +1,7 @@
 package com.example.cc106project.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.cc106project.Model.MyProductsModel;
 import com.example.cc106project.R;
+import com.example.cc106project.ViewProductInfo;
 
 import java.util.ArrayList;
 
@@ -43,8 +45,16 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.My
 
         if (myProductsModel.getItemImage() != null) {
             Glide.with(context).load(myProductsModel.getItemImage()).centerCrop().into(holder.itemImage);
-
+        }else{
+            holder.itemImage.setImageResource(R.drawable.image);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ViewProductInfo.class);
+            intent.putExtra("productID", String.valueOf(myProductsModel.getProductID()));
+            intent.putExtra("sellerID", myProductsModel.getSellerID());
+            context.startActivity(intent);
+        });
 
     }
 

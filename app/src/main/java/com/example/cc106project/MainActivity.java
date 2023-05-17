@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.cc106project.Fragments.Account;
+import com.example.cc106project.Fragments.Feedback;
 import com.example.cc106project.Fragments.Home;
 import com.example.cc106project.Fragments.MyProducts;
 import com.example.cc106project.Fragments.Market;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         Log.i("MainActivity", "onDestroy");
-
+        setStatus(false);
     }
 
     @Override
@@ -108,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPause() {
         super.onPause();
         Log.i("MainActivity", "onPause");
-        setStatus(false);
     }
 
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
     }
 
-    private void setStatus(boolean isOnline){
+    private void setStatus(boolean isOnline) {
         documentReference = fStore.collection("users").document(currentUser.getUid());
 
         HashMap<String, Object> status = new HashMap<>();
@@ -208,11 +208,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                         new Account()).commit();
                 break;
-            case R.id.orders:
-                toolbar.setTitle("Orders");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
-                        new Orders()).commit();
-                break;
             case R.id.settings:
                 toolbar.setTitle("Settings");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
@@ -228,7 +223,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
                         new About()).commit();
                 break;
-
+            case R.id.feedback:
+                toolbar.setTitle("Feedback");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,
+                        new Feedback()).commit();
+                break;
             case R.id.logout:
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle("Logout");
@@ -307,8 +306,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             Log.i("MainActivity", "Displaying Profile Picture");
 
-                        }
-                        else {
+                        } else {
                             navProfilePic.setImageResource(R.drawable.user_icon100);
                         }
 

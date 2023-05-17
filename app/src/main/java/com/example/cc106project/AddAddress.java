@@ -34,11 +34,7 @@ public class AddAddress extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore fStore;
     private FirebaseUser currentUser;
-
-    private GoogleSignInOptions googleSignInOptions;
-    private GoogleSignInClient googleSignInClient;
-    private GoogleSignInAccount googleSignInAccount;
-    String userID;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

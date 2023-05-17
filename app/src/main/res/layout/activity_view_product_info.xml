@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewProductInfo">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Toolbar
+            android:id="@+id/toolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/gray"
+            android:elevation="5dp"
+            android:navigationIcon="@drawable/back_icon"
+            android:title="My Product" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolBar"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/white_box"
+            android:elevation="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_box"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/productImage"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:background="@drawable/white_box"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/image" />
+
+                <ImageButton
+                    android:id="@+id/editProductImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/edit_25"
+                    android:layout_toRightOf="@id/productImage"/>
+
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/productImage"
+                    android:layout_marginTop="10dp"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/productName"
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            android:padding="5dp"
+                            android:text="Product Name"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="10pt" />
+
+                        <TextView
+                            android:id="@+id/productCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            android:padding="5dp"
+                            android:text="Product Category"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="10pt" />
+
+                        <TextView
+                            android:id="@+id/productPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            android:padding="5dp"
+                            android:text="Product Price"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="10pt" />
+
+                        <TextView
+                            android:id="@+id/productStock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            android:padding="5dp"
+                            android:text="Product Stock"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="10pt" />
+
+                        <TextView
+                            android:id="@+id/productAvailability"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            android:padding="5dp"
+                            android:text="Product Availability"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="10pt" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:layout_toRightOf="@id/linearLayout"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/editProductName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/edit_25"
+                            android:layout_margin="2dp"/>
+
+                        <ImageButton
+                            android:id="@+id/editProductCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/edit_25"
+                            android:layout_margin="2dp"/>
+
+                        <ImageButton
+                            android:id="@+id/editProductPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/edit_25"
+                            android:layout_margin="2dp"/>
+
+                        <ImageButton
+                            android:id="@+id/editProductStock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/edit_25"
+                            android:layout_margin="2dp"/>
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+                <Button
+                    android:id="@+id/setAsSoldBtn"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/relativeLayout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/gray"
+                    android:fontFamily="@font/poppins_medium"
+                    android:padding="5dp"
+                    android:text="Mark as Sold" />
+
+                <ImageButton
+                    android:id="@+id/undoBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="23dp"
+                    android:layout_toRightOf="@id/setAsSoldBtn"
+                    android:padding="5dp"
+                    android:src="@drawable/undo" />
+
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardView"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/sourcesanspro_black"
+                android:text="Users Interested:"
+                android:textColor="@color/black"
+                android:textSize="10pt" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/usersInterestedRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView"
+                tools:listitem="@layout/users" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

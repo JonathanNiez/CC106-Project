@@ -104,14 +104,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/chatInfoEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginLeft="10dp"
+                android:layout_margin="10dp"
                 android:drawableStart="@drawable/mail24"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Email"

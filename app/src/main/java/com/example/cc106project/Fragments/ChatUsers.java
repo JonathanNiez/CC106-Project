@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.cc106project.Adapter.UserAdapter;
 import com.example.cc106project.Model.UsersModel;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 public class ChatUsers extends Fragment {
 
     private RecyclerView recyclerView;
+    private TextView noResult;
     private EditText searchChatUsers;
     private ProgressBar progressBar;
     private ArrayList<UsersModel> usersModelArrayList;
@@ -45,7 +47,6 @@ public class ChatUsers extends Fragment {
     private FirebaseUser currentUser;
     private FirebaseFirestore fStore;
     private String TAG = "ChatUsers";
-
     @Override
     public void onStart() {
         super.onStart();
@@ -67,6 +68,8 @@ public class ChatUsers extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat_users, container, false);
 
         Log.i(TAG, "onCreateView");
+
+        noResult = view.findViewById(R.id.noResult);
 
         searchChatUsers = view.findViewById(R.id.searchChatUsers);
         searchChatUsers.addTextChangedListener(new TextWatcher() {
@@ -142,6 +145,8 @@ public class ChatUsers extends Fragment {
                     }
                     userAdapter = new UserAdapter(getContext(), usersModelArrayList, true);
                     recyclerView.setAdapter(userAdapter);
+                }else {
+                    noResult.setVisibility(View.VISIBLE);
                 }
 
             }

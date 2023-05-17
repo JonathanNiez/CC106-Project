@@ -6,6 +6,15 @@ public class MyProductsModel {
     private double itemPrice;
     private int itemStock;
     private int productID;
+    private String sellerID;
+
+    public String getSellerID() {
+        return sellerID;
+    }
+
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
+    }
 
     public int getProductID() {
         return productID;
@@ -54,12 +63,13 @@ public class MyProductsModel {
     }
 
     public MyProductsModel(String itemImage, double itemPrice, String itemName
-            , int itemStock, int productID) {
+            , int itemStock, int productID, String sellerID) {
         this.itemImage = itemImage;
         this.itemPrice = itemPrice;
         this.itemName = itemName;
         this.itemStock = itemStock;
         this.productID = productID;
+        this.sellerID = sellerID;
     }
 
 }

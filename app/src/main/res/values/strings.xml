@@ -3,8 +3,11 @@
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
     <string name="peso_sign">₱</string>
-    <string name="about">This app only uses meet-up payment method to ensure the
-    ambot unsay ibutang diri HAHAHAHAHA</string>
+    <string name="about">CMJ computer parts application is an easy-to-use platform designed specifically
+        for purchasing computer hardware components and accessories. These applications offer a wide
+        variety of products and reviews to help customers make informed purchasing decisions.
+        With competitive pricing and deals,  CMJ computer parts applications make it easy for customers
+        to find the best value for their money.</string>
 
     <string name="facebook_app_id">1212277976150858</string>
     <string name="fb_login_protocol_scheme">fb1234</string>

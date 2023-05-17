@@ -3,15 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".Fragments.Settings">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/coming_soon"
+        android:layout_marginTop="90pt"
+        android:layout_centerHorizontal="true"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Settings"
-        android:textSize="20pt"
-        android:textColor="@color/black"/>
+        android:text="Coming Soon"
+        android:textSize="15pt"
+        android:fontFamily="@font/sourcesanspro_black"
+        android:textColor="@color/black"
+        android:layout_below="@id/imageView"/>
 
 </RelativeLayout>
