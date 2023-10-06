@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         Log.i("MainActivity", "onDestroy");
-        setStatus(false);
     }
 
     @Override

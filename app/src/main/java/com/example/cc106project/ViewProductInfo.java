@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,6 +42,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +93,21 @@ public class ViewProductInfo extends AppCompatActivity implements AdapterView.On
 
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && data != null && data.getData() != null) {
+            imageUri = data.getData();
+
+            productImage.setImageURI(imageUri);
+
+            uploadImageToFirebaseStorage(imageUri, Integer.parseInt(ItemCategoryModel.productID));
+
+            Log.i(TAG, "Image Uploaded: " + imageUri);
+
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
@@ -99,10 +118,9 @@ public class ViewProductInfo extends AppCompatActivity implements AdapterView.On
         super.onDestroy();
         Log.i(TAG, "onDestroy");
 
-        if (!isFinishing()) {
+
             Glide.with(this).clear(productImage);
 
-        }
 
     }
 
@@ -132,6 +150,8 @@ public class ViewProductInfo extends AppCompatActivity implements AdapterView.On
         intent = getIntent();
         String getProductID = intent.getStringExtra("productID");
         String getSellerID = intent.getStringExtra("sellerID");
+
+        ItemCategoryModel.productID = getProductID;
 
         fStore = FirebaseFirestore.getInstance();
         documentReference = fStore.collection("products").document(getProductID);
@@ -344,7 +364,8 @@ public class ViewProductInfo extends AppCompatActivity implements AdapterView.On
         });
 
         editProductImage.setOnClickListener(v -> {
-
+            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, REQUEST_CODE);
         });
 
         progressBar = findViewById(R.id.progressBar);
@@ -519,6 +540,48 @@ public class ViewProductInfo extends AppCompatActivity implements AdapterView.On
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressBar.setVisibility(View.GONE);
+                Log.e(TAG, e.getMessage());
+            }
+        });
+    }
+    private void uploadImageToFirebaseStorage(Uri imageUri, int xProductID) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imagesRef = storageRef.child("images");
+        StorageReference fileRef = imagesRef.child(imageUri.getLastPathSegment());
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Get the download URL of the uploaded image
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String imageFormat = ".png";
+
+                        // Save the download URL in Firestore
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("itemImage", uri.toString());
+                        fStore.collection("products").document(String.valueOf(xProductID)).update(data);
+
+                        productImage.setImageURI(uri);
+                        ItemCategoryModel.productID = null;
+                        Log.i(TAG, "Image Uploaded URL: " + uri);
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        ItemCategoryModel.productID = null;
+
+                        Toast.makeText(ViewProductInfo.this, "Image Failed to Upload", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Image Failed to Upload");
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ViewProductInfo.this, "Image Failed to Upload", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, e.getMessage());
             }
         });

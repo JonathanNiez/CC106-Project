@@ -105,35 +105,32 @@ public class RecentChat extends Fragment {
 
     private void readChats() {
         usersModelArrayList = new ArrayList<>();
-        fStore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                usersModelArrayList.clear();
-                progressBar.setVisibility(View.GONE);
+        fStore.collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            usersModelArrayList.clear();
+            progressBar.setVisibility(View.GONE);
 
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    UsersModel usersModel = documentSnapshot.toObject(UsersModel.class);
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                UsersModel usersModel = documentSnapshot.toObject(UsersModel.class);
 
-                    //Displays a user that is recently chatted
-                    for (String ID : stringUsersList) {
-                        if (currentUser.getUid().equals(ID)) {
-                            if (usersModelArrayList.size() != 0) {
-                                for (UsersModel usersModel1 : usersModelArrayList) {
-                                    if (!currentUser.getUid().equals(usersModel1.getUserID())) {
-                                        usersModelArrayList.add(usersModel1);
-                                    }
+                //Displays a user that is recently chatted
+                for (String ID : stringUsersList) {
+                    if (currentUser.getUid().equals(ID)) {
+                        if (usersModelArrayList.size() != 0) {
+                            for (UsersModel usersModel1 : usersModelArrayList) {
+                                if (!currentUser.getUid().equals(usersModel1.getUserID())) {
+                                    usersModelArrayList.add(usersModel1);
                                 }
-                            } else {
-                                usersModelArrayList.add(usersModel);
                             }
+                        } else {
+                            usersModelArrayList.add(usersModel);
                         }
                     }
-                    Log.i(TAG, "Displaying Recent Chat");
-
                 }
-                userAdapter = new UserAdapter(getContext(), usersModelArrayList, false);
-                recyclerView.setAdapter(userAdapter);
+                Log.i(TAG, "Displaying Recent Chat");
+
             }
+            userAdapter = new UserAdapter(getContext(), usersModelArrayList, false);
+            recyclerView.setAdapter(userAdapter);
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

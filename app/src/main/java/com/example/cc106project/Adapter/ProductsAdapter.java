@@ -56,8 +56,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             intent.putExtra("sellerID", products.getSellerID());
             context.startActivity(intent);
         });
-
-
     }
 
     @Override

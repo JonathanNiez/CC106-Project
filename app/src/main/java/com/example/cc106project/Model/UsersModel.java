@@ -1,7 +1,6 @@
 package com.example.cc106project.Model;
 
 public class UsersModel {
-
     private String firstName;
     private String lastName;
     private String profilePicUrl;

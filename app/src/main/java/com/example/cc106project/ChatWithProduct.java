@@ -67,6 +67,17 @@ public class ChatWithProduct extends AppCompatActivity {
     private String UserID;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (!isFinishing()){
+            Glide.with(this).clear(chatProfilePic);
+            Glide.with(this).clear(chatProductImage);
+
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_with_product);
